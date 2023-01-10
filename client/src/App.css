@@ -1,13 +1,10 @@
 /* Dekstop */
 @media screen and (min-width: 768px) {
   .hoveredButton {
-    /* opacity: 0.7; */
-    box-shadow: 2px 2px 2px #888888;
+    box-shadow: 0px 0px 2px 2px #888888;
   }
   .hoveredButton:hover {
-    /* opacity: 0.7; */
-    box-shadow: 1px 1px 1px #888888;
-    box-shadow: none;
+    box-shadow: 0px 0px 1px 1px #888888;
   }
 }
 /* End of Dekstop */

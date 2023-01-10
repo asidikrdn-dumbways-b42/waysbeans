@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route } from "react-router-dom";
 import Navigationbar from "./components/Navigationbar";
 import Home from "./pages/Home";
+import Detail from "./pages/Detail";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Navigationbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/detail" element={<h1>Detail</h1>} />
+        <Route path="/detail" element={<Detail />} />
         <Route path="/cart" element={<h1>Cart</h1>} />
         <Route path="/profile" element={<h1>Profile</h1>} />
         <Route path="/dashboard" element={<h1>Dashboard</h1>} />
