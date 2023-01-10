@@ -14,7 +14,7 @@ const Navigationbar = () => {
         boxShadow: "0px 0px 20px #888888",
       }}
     >
-      <Container style={{ zIndex: 3 }}>
+      <Container style={{ zIndex: 3, padding: "0 150px" }} fluid>
         <Link to="/" className={`navbar-brand`}>
           <Image
             src="/assets/NavbarIcon.svg"
