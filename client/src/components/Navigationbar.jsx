@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Navbar, Container, Nav, Button, Image } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
+import DropdownProfile from "./DropdownProfile";
 
 const Navigationbar = () => {
   const [loginForm, setLoginForm] = useState(false);
   const [registerForm, setRegisterForm] = useState(false);
+
+  const navigate = useNavigate();
 
   return (
     <Navbar
@@ -28,16 +31,8 @@ const Navigationbar = () => {
             style={{ width: 250 }}
           />
         </Link>
-        <Nav className="ms-auto">
-          <Button
-            variant="outline-light"
-            className="d-block d-lg-none"
-            // onClick={() => {
-            //   setLoginForm(true);
-            // }}
-          >
-            Login
-          </Button>
+
+        {/* <Nav className="ms-auto">
           <Button
             id="navLoginButton"
             className="mx-2 d-none d-lg-block fw-5 hoveredButton"
@@ -68,6 +63,40 @@ const Navigationbar = () => {
           >
             Register
           </Button>
+        </Nav> */}
+
+        <Nav className="ms-auto">
+          <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
+            <Image
+              src="/assets/Basket.svg"
+              style={{ width: 50, cursor: "pointer" }}
+              className="me-4"
+              onClick={() => {
+                navigate("/cart");
+              }}
+            />
+            <div
+              className="position-absolute px-2 rounded-circle text-white"
+              style={{
+                backgroundColor: "red",
+                top: 25,
+                right: 20,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              2
+            </div>
+          </div>
+          <DropdownProfile>
+            <Image
+              src="/assets/profil.jpg"
+              style={{ width: 75 }}
+              roundedCircle
+            />
+          </DropdownProfile>
         </Nav>
       </Container>
 
