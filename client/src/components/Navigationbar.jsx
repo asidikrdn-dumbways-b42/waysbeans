@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { Navbar, Container, Nav, Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Login from "./Auth/Login";
+import Register from "./Auth/Register";
 
 const Navigationbar = () => {
+  const [loginForm, setLoginForm] = useState(false);
+  const [registerForm, setRegisterForm] = useState(false);
+
   return (
     <Navbar
       bg="light"
@@ -42,9 +48,9 @@ const Navigationbar = () => {
               backgroundColor: "#F5F5F5",
               fontWeight: "bold",
             }}
-            // onClick={() => {
-            //   setLoginForm(true);
-            // }}
+            onClick={() => {
+              setLoginForm(true);
+            }}
           >
             Login
           </Button>
@@ -56,14 +62,27 @@ const Navigationbar = () => {
               border: "2px solid #613D2B",
               fontWeight: "bold",
             }}
-            // onClick={() => {
-            //   setRegisterForm(true);
-            // }}
+            onClick={() => {
+              setRegisterForm(true);
+            }}
           >
             Register
           </Button>
         </Nav>
       </Container>
+
+      {/* Login Modal */}
+      <Login
+        loginForm={loginForm}
+        setLoginForm={setLoginForm}
+        setRegisterForm={setRegisterForm}
+      />
+      {/* Regiser Modal */}
+      <Register
+        registerForm={registerForm}
+        setRegisterForm={setRegisterForm}
+        setLoginForm={setLoginForm}
+      />
     </Navbar>
   );
 };
