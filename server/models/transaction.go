@@ -1,7 +1,7 @@
 package models
 
 type Transaction struct {
-	ID        int             `json:"id" gorm:"type: int"`
+	ID        string          `json:"id" gorm:"type: varchar(255)"`
 	Qty       int             `json:"qty" gorm:"type: int"`
 	Total     int             `json:"total" gorm:"type: int"`
 	Status    string          `json:"status" gorm:"type: varchar(255)"`
