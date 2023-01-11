@@ -2,6 +2,7 @@ package routes
 
 import (
 	"waysbeans/handlers"
+	"waysbeans/pkg/middleware"
 	"waysbeans/pkg/mysql"
 	"waysbeans/repositories"
 
@@ -23,5 +24,5 @@ func Auth(r *mux.Router) {
 	r.HandleFunc("/login", h.Login).Methods("POST")
 
 	// endpoint untuk pengecekan status login
-	// r.HandleFunc("/check-auth", middleware.UserAuth(h.CheckAuth)).Methods("GET")
+	r.HandleFunc("/check-auth", middleware.UserAuth(h.CheckAuth)).Methods("GET")
 }

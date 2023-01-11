@@ -274,7 +274,7 @@ func (h *handlerAuth) CheckAuth(w http.ResponseWriter, r *http.Request) {
 	// membuat data yang akan disisipkan di response
 	var authResponse dto.AuthResponse
 	// authResponse.UserID = int(claims["id"].(float64))
-	authResponse.ID = claims["id"].(int)
+	authResponse.ID = int(claims["id"].(float64))
 	authResponse.Name = claims["name"].(string)
 	authResponse.Email = claims["email"].(string)
 	authResponse.Role = claims["role"].(string)
