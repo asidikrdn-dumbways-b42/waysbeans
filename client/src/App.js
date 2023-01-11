@@ -5,6 +5,7 @@ import Navigationbar from "./components/Navigationbar";
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/detail" element={<Detail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/profile" element={<h1>Profile</h1>} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/dashboard" element={<h1>Dashboard</h1>} />
         <Route path="/add-product" element={<h1>Add Product</h1>} />
         <Route path="/list-product" element={<h1>List Product</h1>} />
