@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"os"
 	"waysbeans/database"
-	"waysbeans/pkg/postgre"
+	"waysbeans/pkg/mysql"
 	"waysbeans/routes"
 
 	"github.com/gorilla/handlers"
@@ -21,7 +21,8 @@ func main() {
 	}
 
 	// initial DB
-	postgre.DatabaseInit()
+	// postgre.DatabaseInit()
+	mysql.DatabaseInit()
 
 	// run migration
 	database.RunMigration()
