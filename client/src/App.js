@@ -8,6 +8,7 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import ProductList from "./pages/ProductList";
 import IncomeTransaction from "./pages/IncomeTransaction";
+import AddProduct from "./pages/AddProduct";
 
 function App() {
   return (
@@ -18,8 +19,7 @@ function App() {
         <Route path="/detail" element={<Detail />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<h1>Dashboard</h1>} />
-        <Route path="/add-product" element={<h1>Add Product</h1>} />
+        <Route path="/add-product" element={<AddProduct />} />
         <Route path="/list-product" element={<ProductList />} />
         <Route path="/transactions" element={<IncomeTransaction />} />
       </Routes>
