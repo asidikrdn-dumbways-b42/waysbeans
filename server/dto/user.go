@@ -1,7 +1,7 @@
 package dto
 
 type UpdateUserRequest struct {
-	FullName string `form:"full_name"`
+	Name     string `form:"name"`
 	Phone    int    `form:"phone"`
 	Alamat   string `form:"alamat"`
 	PostCode int    `form:"post_code"`
@@ -10,7 +10,7 @@ type UpdateUserRequest struct {
 
 type UserResponse struct {
 	ID       int    `json:"id"`
-	FullName string `json:"full_name"`
+	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Phone    string `json:"phone"`
 	Alamat   string `json:"alamat"`

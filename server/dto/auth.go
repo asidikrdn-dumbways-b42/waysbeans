@@ -1,15 +1,15 @@
 package dto
 
 type RegisterRequest struct {
-	FullName string `json:"full_name" validate:"required"`
+	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
 type RegisterResponse struct {
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 }
 
 type LoginRequest struct {
@@ -18,9 +18,9 @@ type LoginRequest struct {
 }
 
 type AuthResponse struct {
-	ID       int    `json:"id"`
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
-	Token    string `json:"token"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
+	Token string `json:"token"`
 }

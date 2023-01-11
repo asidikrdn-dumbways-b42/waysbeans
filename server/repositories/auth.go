@@ -1,6 +1,9 @@
 package repositories
 
-import "waysbeans/models"
+import (
+	"fmt"
+	"waysbeans/models"
+)
 
 type AuthRepository interface {
 	Register(newUser models.User) (models.User, error)
@@ -19,6 +22,8 @@ func (r *repository) IsUserRegistered(email string) bool {
 	// validasi data user, jika email sudah terdaftar maka kirimkan true
 	var user models.User
 	errCekUser := r.db.First(&user, "email=?", email).Error
+
+	fmt.Println(errCekUser)
 	return errCekUser == nil
 }
 
