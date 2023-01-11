@@ -7,6 +7,7 @@ import Detail from "./pages/Detail";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import ProductList from "./pages/ProductList";
+import IncomeTransaction from "./pages/IncomeTransaction";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/dashboard" element={<h1>Dashboard</h1>} />
         <Route path="/add-product" element={<h1>Add Product</h1>} />
         <Route path="/list-product" element={<ProductList />} />
+        <Route path="/transactions" element={<IncomeTransaction />} />
       </Routes>
     </>
   );
