@@ -9,7 +9,7 @@ type User struct {
 	Image    string `json:"image" gorm:"type: varchar(255)"`
 	Address  string `json:"address" gorm:"type: varchar(255)"`
 	PostCode int    `json:"post_code" gorm:"type: int"`
-	Role     string `json:"role" gorm:"type: varchar(255"`
+	Role     string `json:"role" gorm:"type: varchar(255)"`
 }
 
 type UserResponse struct {
