@@ -11,10 +11,12 @@ type TransactionRequest struct {
 }
 
 type TransactionResponse struct {
-	ID      string                 `json:"id"`
-	Qty     int                    `json:"qty"`
-	Total   int                    `json:"total"`
-	Status  string                 `json:"status"`
-	User    models.UserResponse    `json:"user"`
-	Product models.ProductResponse `json:"product"`
+	ID         string                 `json:"id"`
+	MidtransID string                 `json:"midtrans_id"`
+	OrderDate  string                 `json:"order_date"`
+	Qty        int                    `json:"qty"`
+	Total      int                    `json:"total"`
+	Status     string                 `json:"status"`
+	User       models.UserResponse    `json:"user"`
+	Product    models.ProductResponse `json:"product"`
 }
