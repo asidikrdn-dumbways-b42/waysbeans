@@ -1,8 +1,22 @@
-import { Card, Col, Container, Image, Row } from "react-bootstrap";
+import { Card, Col, Container, Image, Row, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { API } from "../config/api";
+import { useQuery } from "react-query";
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const { data: productData, isisLoading: productDataIsLoading } = useQuery(
+    "productDataCache",
+    async (e) => {
+      try {
+        const response = await API.get("/products");
+        return response.data.data;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
   return (
     <main style={{ marginTop: 150 }}>
       <Container className="position-relative">
@@ -38,75 +52,51 @@ const Home = () => {
       </Container>
       <Container className="my-5">
         <Row>
-          <Col lg={3} xs={6}>
-            <Card
-              style={{
-                backgroundColor: "#F6E6DA",
-                border: "none",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                navigate("/detail");
-              }}
+          {productDataIsLoading ? (
+            <Col
+              xs={12}
+              className="d-flex flex-row justify-content-center py-5"
             >
-              <Card.Img variant="top" src="/assets/Product.svg" />
-              <Card.Body>
-                <Card.Title style={{ color: "#613D2B" }} className="fw-bold">
-                  RWANDA Beans
-                </Card.Title>
-                <Card.Text style={{ color: "#9D5453" }}>
-                  Rp 299.900,-
-                  <br />
-                  Stock : 200
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col lg={3} xs={6}>
-            <Card style={{ backgroundColor: "#F6E6DA", border: "none" }}>
-              <Card.Img variant="top" src="/assets/Product.svg" />
-              <Card.Body>
-                <Card.Title style={{ color: "#613D2B" }} className="fw-bold">
-                  RWANDA Beans
-                </Card.Title>
-                <Card.Text style={{ color: "#9D5453" }}>
-                  Rp 299.900,-
-                  <br />
-                  Stock : 200
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col lg={3} xs={6}>
-            <Card style={{ backgroundColor: "#F6E6DA", border: "none" }}>
-              <Card.Img variant="top" src="/assets/Product.svg" />
-              <Card.Body>
-                <Card.Title style={{ color: "#613D2B" }} className="fw-bold">
-                  RWANDA Beans
-                </Card.Title>
-                <Card.Text style={{ color: "#9D5453" }}>
-                  Rp 299.900,-
-                  <br />
-                  Stock : 200
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col lg={3} xs={6}>
-            <Card style={{ backgroundColor: "#F6E6DA", border: "none" }}>
-              <Card.Img variant="top" src="/assets/Product.svg" />
-              <Card.Body>
-                <Card.Title style={{ color: "#613D2B" }} className="fw-bold">
-                  RWANDA Beans
-                </Card.Title>
-                <Card.Text style={{ color: "#9D5453" }}>
-                  Rp 299.900,-
-                  <br />
-                  Stock : 200
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
+              <Spinner
+                animation="border"
+                variant="danger"
+                className="mx-auto"
+                size="xl"
+              />
+            </Col>
+          ) : (
+            productData?.map((el) => {
+              return (
+                <Col lg={3} xs={6} key={el.id}>
+                  <Card
+                    style={{
+                      backgroundColor: "#F6E6DA",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => {
+                      navigate(`/detail/${el.id}`);
+                    }}
+                  >
+                    <Card.Img variant="top" src={el.image} />
+                    <Card.Body>
+                      <Card.Title
+                        style={{ color: "#613D2B" }}
+                        className="fw-bold"
+                      >
+                        {el.name}
+                      </Card.Title>
+                      <Card.Text style={{ color: "#9D5453" }}>
+                        Rp {el.price.toLocaleString()},-
+                        <br />
+                        Stock : {el.stock}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })
+          )}
         </Row>
       </Container>
     </main>
