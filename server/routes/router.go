@@ -7,5 +7,6 @@ func RouterInit(r *mux.Router) {
 	Auth(r)
 	User(r)
 	Product(r)
+	Order(r)
 	Transaction(r)
 }
