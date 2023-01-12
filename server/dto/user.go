@@ -2,9 +2,9 @@ package dto
 
 type UpdateUserRequest struct {
 	Name     string `form:"name"`
-	Phone    int    `form:"phone"`
+	Phone    string `form:"phone"`
 	Address  string `form:"address"`
-	PostCode int    `form:"post_code"`
+	PostCode string `form:"post_code"`
 	Image    string `form:"image"`
 }
 
@@ -14,7 +14,7 @@ type UserResponse struct {
 	Email    string `json:"email"`
 	Phone    string `json:"phone"`
 	Address  string `json:"address"`
-	PostCode int    `json:"post_code"`
-	Image    int    `json:"image"`
+	PostCode string `json:"post_code"`
+	Image    string `json:"image"`
 	Role     string `json:"role"`
 }
