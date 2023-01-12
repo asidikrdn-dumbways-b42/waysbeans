@@ -50,7 +50,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 	// If is different & Status is "success" decrement available quota on data trip
 	if status != transaction.Status && status == "success" {
 		var product models.Product
-		r.db.First(&product, transaction.ProductID)
+		// r.db.First(&product, transaction.ProductID)
 		product.Stock = product.Stock - transaction.Qty
 		r.db.Model(&product).Updates(product)
 	}
@@ -58,7 +58,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 	// If is different & Status is "reject" decrement available quota on data trip
 	if status != transaction.Status && status == "reject" {
 		var product models.Product
-		r.db.First(&product, transaction.ProductID)
+		// r.db.First(&product, transaction.ProductID)
 		product.Stock = product.Stock + transaction.Qty
 		r.db.Model(&product).Updates(product)
 	}

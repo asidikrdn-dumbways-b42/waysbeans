@@ -2,7 +2,13 @@ package dto
 
 import "waysbeans/models"
 
-type TransactionRequest struct {
+type CreateTransactionRequest struct {
+	Qty       int `json:"qty" validate:"required"`
+	Total     int `json:"total" validate:"required"`
+	UserID    int `json:"user_id" validate:"required"`
+	ProductID int `json:"product_id" validate:"required"`
+}
+type UpdateTransactionRequest struct {
 	Qty       int    `json:"qty"`
 	Total     int    `json:"total"`
 	UserID    int    `json:"user_id"`

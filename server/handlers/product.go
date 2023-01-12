@@ -29,7 +29,7 @@ func (h *handlerProduct) FindProducts(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -38,7 +38,7 @@ func (h *handlerProduct) FindProducts(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertMultipleProductResponse(products),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -54,7 +54,7 @@ func (h *handlerProduct) GetProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -63,7 +63,7 @@ func (h *handlerProduct) GetProduct(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertProductResponse(product),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -77,7 +77,7 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		res := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(res)
@@ -92,12 +92,12 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	request.Stock, _ = strconv.Atoi(r.FormValue("stock"))
 	request.Price, _ = strconv.Atoi(r.FormValue("price"))
 
-	// memvalidasi inputan dari request body berdasarkan struct dto.CountryRequest
+	// memvalidasi inputan dari request body
 	validation := validator.New()
 	errValidation := validation.Struct(request)
 	if errValidation != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: errValidation.Error()}
+		response := dto.ErrorResult{Status: "error", Message: errValidation.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -114,7 +114,7 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	productAdded, err := h.ProductRepository.CreateProduct(newProduct)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -122,14 +122,14 @@ func (h *handlerProduct) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	product, err := h.ProductRepository.GetProduct(productAdded.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	response := dto.SuccessResult{
-		Status: http.StatusCreated,
+		Status: "success",
 		Data:   convertProductResponse(product),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -145,7 +145,7 @@ func (h *handlerProduct) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		res := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(res)
@@ -164,7 +164,7 @@ func (h *handlerProduct) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -190,7 +190,7 @@ func (h *handlerProduct) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	productUpdated, err := h.ProductRepository.UpdateProduct(updateProduct)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -198,14 +198,14 @@ func (h *handlerProduct) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 	product, err := h.ProductRepository.GetProduct(productUpdated.ID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertProductResponse(product),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -221,7 +221,7 @@ func (h *handlerProduct) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -233,14 +233,14 @@ func (h *handlerProduct) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	productUpdated, err := h.ProductRepository.UpdateProduct(updateProduct)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   fmt.Sprintf("Product dengan id %d berhasil di non-aktifkan", productUpdated.ID),
 	}
 	json.NewEncoder(w).Encode(response)

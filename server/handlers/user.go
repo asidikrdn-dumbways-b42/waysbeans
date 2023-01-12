@@ -26,7 +26,7 @@ func (h *handlerUser) FindUsers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -35,7 +35,7 @@ func (h *handlerUser) FindUsers(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertMultipleUserResponse(users),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -52,7 +52,7 @@ func (h *handlerUser) GetUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -61,7 +61,7 @@ func (h *handlerUser) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertUserResponse(user),
 	}
 	json.NewEncoder(w).Encode(response)
@@ -75,7 +75,7 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		res := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(res)
@@ -97,7 +97,7 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		response := dto.ErrorResult{
-			Status:  http.StatusNotFound,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -124,7 +124,7 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		response := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: err.Error(),
 		}
 		json.NewEncoder(w).Encode(response)
@@ -133,7 +133,7 @@ func (h *handlerUser) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertUserResponse(updatedUser),
 	}
 	json.NewEncoder(w).Encode(response)

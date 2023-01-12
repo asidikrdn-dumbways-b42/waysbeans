@@ -38,12 +38,12 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 	var request dto.RegisterRequest
 	json.NewDecoder(r.Body).Decode(&request)
 
-	// memvalidasi inputan dari request body berdasarkan struct dto.CountryRequest
+	// memvalidasi inputan dari request body
 	validation := validator.New()
 	err := validation.Struct(request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -52,7 +52,7 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 	hashedPassword, err := bcrypt.HashingPassword(request.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -78,7 +78,7 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 	if h.AuthRepository.IsUserRegistered(request.Email) {
 		w.WriteHeader(http.StatusBadRequest)
 		response := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: "User already registered",
 		}
 		json.NewEncoder(w).Encode(response)
@@ -91,7 +91,7 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 	// // menyiapkan response
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   "Verify your email to complete your registration",
 	}
 	// mengirim response
@@ -106,7 +106,7 @@ func (h *handlerAuth) VerifyRegistration(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		response := dto.ErrorResult{
-			Status:  http.StatusBadRequest,
+			Status:  "error",
 			Message: "Token is not valid",
 		}
 		json.NewEncoder(w).Encode(response)
@@ -124,7 +124,7 @@ func (h *handlerAuth) VerifyRegistration(w http.ResponseWriter, r *http.Request)
 	_, err = h.AuthRepository.Register(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		response := dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -142,7 +142,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 
 	if request.Email == "" || request.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: "Please enter a valid email and password"}
+		response := dto.ErrorResult{Status: "error", Message: "Please enter a valid email and password"}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -151,7 +151,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 	userLogin, err := h.AuthRepository.Login(request.Email)
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
-		response := dto.ErrorResult{Status: http.StatusNotFound, Message: "email not registered"}
+		response := dto.ErrorResult{Status: "error", Message: "email not registered"}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -160,7 +160,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 	isPasswordValid := bcrypt.CheckPassword(request.Password, userLogin.Password)
 	if !isPasswordValid {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: "wrong password"}
+		response := dto.ErrorResult{Status: "error", Message: "wrong password"}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -192,7 +192,7 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 	// menyiapkan response
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   loginResponse,
 	}
 	// mengirim response
@@ -218,12 +218,12 @@ func (h *handlerAuth) RegisterAdmin(w http.ResponseWriter, r *http.Request) {
 	var request dto.RegisterRequest
 	json.NewDecoder(r.Body).Decode(&request)
 
-	// memvalidasi inputan dari request body berdasarkan struct dto.CountryRequest
+	// memvalidasi inputan dari request body
 	validation := validator.New()
 	err := validation.Struct(request)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -232,7 +232,7 @@ func (h *handlerAuth) RegisterAdmin(w http.ResponseWriter, r *http.Request) {
 	hashedPassword, err := bcrypt.HashingPassword(request.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -249,7 +249,7 @@ func (h *handlerAuth) RegisterAdmin(w http.ResponseWriter, r *http.Request) {
 	userAdded, err := h.AuthRepository.Register(newUser)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		response := dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()}
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
@@ -257,7 +257,7 @@ func (h *handlerAuth) RegisterAdmin(w http.ResponseWriter, r *http.Request) {
 	// menyiapkan response
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   convertRegisterResponse(userAdded),
 	}
 	// mengirim response
@@ -282,7 +282,7 @@ func (h *handlerAuth) CheckAuth(w http.ResponseWriter, r *http.Request) {
 	// menyiapkan response
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{
-		Status: http.StatusOK,
+		Status: "success",
 		Data:   authResponse,
 	}
 	// mengirim response

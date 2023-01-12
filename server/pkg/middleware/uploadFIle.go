@@ -34,7 +34,7 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 		if filepath.Ext(handler.Filename) != ".jpg" && filepath.Ext(handler.Filename) != ".jpeg" && filepath.Ext(handler.Filename) != ".png" {
 			w.WriteHeader(http.StatusBadRequest)
 			response := dto.ErrorResult{
-				Status:  http.StatusBadRequest,
+				Status:  "error",
 				Message: "The provided file format is not allowed. Please upload a JPG, JPEG or PNG image",
 			}
 			json.NewEncoder(w).Encode(response)

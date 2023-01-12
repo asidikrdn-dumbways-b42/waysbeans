@@ -17,7 +17,7 @@ func UserAuth(next http.HandlerFunc) http.HandlerFunc {
 		if token == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			response := dto.ErrorResult{
-				Status:  http.StatusUnauthorized,
+				Status:  "error",
 				Message: "Unauthorized",
 			}
 			json.NewEncoder(w).Encode(response)
@@ -29,7 +29,7 @@ func UserAuth(next http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			response := dto.ErrorResult{
-				Status:  http.StatusUnauthorized,
+				Status:  "error",
 				Message: "Unauthorized",
 			}
 			json.NewEncoder(w).Encode(response)
@@ -51,7 +51,7 @@ func AdminAuth(next http.HandlerFunc) http.HandlerFunc {
 		if token == "" {
 			w.WriteHeader(http.StatusUnauthorized)
 			response := dto.ErrorResult{
-				Status:  http.StatusUnauthorized,
+				Status:  "error",
 				Message: "Unauthorized",
 			}
 			json.NewEncoder(w).Encode(response)
@@ -63,7 +63,7 @@ func AdminAuth(next http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			response := dto.ErrorResult{
-				Status:  http.StatusUnauthorized,
+				Status:  "error",
 				Message: "Unauthorized",
 			}
 			json.NewEncoder(w).Encode(response)
@@ -73,7 +73,7 @@ func AdminAuth(next http.HandlerFunc) http.HandlerFunc {
 		if userRole := claims["role"].(string); userRole != "admin" {
 			w.WriteHeader(http.StatusUnauthorized)
 			response := dto.ErrorResult{
-				Status:  http.StatusUnauthorized,
+				Status:  "error",
 				Message: "Unauthorized, You're not administrator",
 			}
 			json.NewEncoder(w).Encode(response)
