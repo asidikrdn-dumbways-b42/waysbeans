@@ -12,8 +12,10 @@ const UserPrivateRoute = () => {
     <>
       {!localStorage.getItem("token") ? (
         <Navigate to="/" />
+      ) : loginState?.isLogin && loginState.userInfo?.role === "user" ? (
+        <Outlet />
       ) : (
-        loginState?.isLogin && loginState.userInfo?.role === "user" && <Outlet />
+        <Navigate to="/" />
       )}
     </>
   );

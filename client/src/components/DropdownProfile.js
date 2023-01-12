@@ -101,6 +101,11 @@ const DropdownProfile = (props) => {
               <div
                 className="px-3 py-2 d-flex flex-row justify-content-start align-items-center dropdown-profile-item hoveredDropdown"
                 style={{ cursor: "pointer" }}
+                onClick={() => {
+                  setAuthToken();
+                  dispatchLogin(logout());
+                  // navigate("/");
+                }}
               >
                 <Image
                   src="/assets/Logout.svg"

@@ -27,7 +27,6 @@ const Navigationbar = () => {
     }
   );
 
-
   return (
     <Navbar
       bg="light"
@@ -84,30 +83,33 @@ const Navigationbar = () => {
           </Nav>
         ) : (
           <Nav className="ms-auto">
-            <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
-              <Image
-                src="/assets/Basket.svg"
-                style={{ width: 50, cursor: "pointer" }}
-                className="me-4"
-                onClick={() => {
-                  navigate("/cart");
-                }}
-              />
-              <div
-                className="position-absolute px-2 rounded-circle text-white"
-                style={{
-                  backgroundColor: "red",
-                  top: 25,
-                  right: 20,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  navigate("/cart");
-                }}
-              >
-                2
+            {userProfile?.role === "user" && (
+              <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
+                <Image
+                  src="/assets/Basket.svg"
+                  style={{ width: 50, cursor: "pointer" }}
+                  className="me-4"
+                  onClick={() => {
+                    navigate("/cart");
+                  }}
+                />
+                <div
+                  className="position-absolute px-2 rounded-circle text-white"
+                  style={{
+                    backgroundColor: "red",
+                    top: 25,
+                    right: 20,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    navigate("/cart");
+                  }}
+                >
+                  2
+                </div>
               </div>
-            </div>
+            )}
+
             <DropdownProfile>
               {userProfile !== undefined && userProfile.image !== "" ? (
                 <Image

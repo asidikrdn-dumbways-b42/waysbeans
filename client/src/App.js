@@ -13,6 +13,9 @@ import { MyContext } from "./store/Store";
 import { setAuthToken, API } from "./config/api";
 import { authSuccess, authError } from "./store/actions/loginAction";
 import { useContext, useEffect } from "react";
+import PublicRoute from "./components/PrivateRoute/PublicRoute";
+import UserPrivateRoute from "./components/PrivateRoute/UserPrivateRoute";
+import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
 
 function App() {
   const { dispatchLogin } = useContext(MyContext);
@@ -41,13 +44,19 @@ function App() {
     <>
       <Navigationbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/add-product" element={<AddProduct />} />
-        <Route path="/list-product" element={<ProductList />} />
-        <Route path="/transactions" element={<IncomeTransaction />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/detail/:id" element={<Detail />} />
+        </Route>
+        <Route element={<UserPrivateRoute />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route element={<AdminPrivateRoute />}>
+          <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/list-product" element={<ProductList />} />
+          <Route path="/transactions" element={<IncomeTransaction />} />
+        </Route>
       </Routes>
     </>
   );

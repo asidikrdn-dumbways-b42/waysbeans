@@ -11,8 +11,10 @@ const AdminPrivateRoute = () => {
     <>
       {!localStorage.getItem("token") ? (
         <Navigate to="/" />
+      ) : loginState?.isLogin && loginState.userInfo?.role === "admin" ? (
+        <Outlet />
       ) : (
-        loginState?.isLogin && loginState.userInfo?.role === "admin" && <Outlet />
+        <Navigate to="/" />
       )}
     </>
   );
