@@ -1,25 +1,19 @@
 import { useState } from "react";
 import { Button, Modal, Form, Spinner } from "react-bootstrap";
-// import { useMutation } from "react-query";
-// import { API } from "../../config/api";
+import { useMutation } from "react-query";
+import { API } from "../../config/api";
 import Swal from "sweetalert2";
 
 const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
   const [input, setInput] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
-    gender: "",
-    phone: "",
-    address: "",
   });
   const [error, setError] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
-    gender: "",
-    phone: "",
-    address: "",
   });
 
   // fungsi untuk menghandle saat terjadi perubahan pada input form
@@ -29,10 +23,9 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
     });
   };
 
-  /*
   const validation = (inputItem) => {
     const newError = {
-      fullName: "",
+      name: "",
       email: "",
       password: "",
       gender: "",
@@ -40,12 +33,12 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
       address: "",
     };
 
-    // Validasi fullName
-    let fullName = inputItem.fullName.trim();
-    if (fullName === "") {
-      newError.fullName = "Fullname must be fill !";
+    // Validasi name
+    let name = inputItem.name.trim();
+    if (name === "") {
+      newError.name = "Name must be fill !";
     } else {
-      newError.fullName = "";
+      newError.name = "";
     }
 
     // Validasi Email
@@ -73,51 +66,16 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
       newError.password = "";
     }
 
-    // Validasi Gender
-    let gender = inputItem.gender;
-    if (gender === "") {
-      newError.gender = "Gender must be choosed !";
-    } else {
-      newError.gender = "";
-    }
-
-    // Validasi Phone
-    let phone = inputItem.phone.trim();
-    if (phone === "") {
-      newError.phone = "Phone must be fill !";
-    } else if (parseInt(phone) < 0) {
-      newError.phone = "can't be less than 0";
-    } else if (phone.length < 10) {
-      newError.phone = "Please insert at least 10 digit number phone";
-    } else if (phone.length > 13) {
-      newError.phone = "Please insert max 13 digit number phone";
-    } else {
-      newError.phone = "";
-    }
-
-    // Validasi Address
-    let address = inputItem.address.trim();
-    if (address === "") {
-      newError.address = "Address must be fill !";
-    } else {
-      newError.address = "";
-    }
-
     if (
-      newError.fullName === "" &&
+      newError.name === "" &&
       newError.email === "" &&
-      newError.password === "" &&
-      newError.phone === "" &&
-      newError.address === ""
+      newError.password === ""
     ) {
       // reset error
       setError({
-        fullName: "",
+        name: "",
         email: "",
         password: "",
-        gender: "",
-        phone: "",
-        address: "",
       });
       return true;
     } else {
@@ -149,15 +107,13 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
         // console.log(response.data);
 
         // Notification
-        if (response.data.code === 200) {
+        if (response.data.status === "success") {
           // reset input
           setInput({
-            fullName: "",
+            name: "",
             email: "",
             password: "",
             gender: "",
-            phone: "",
-            address: "",
           });
 
           // tutup form register dan buka form login
@@ -178,7 +134,6 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
       }
     }
   });
-  */
 
   return (
     <Modal
@@ -207,13 +162,14 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
         Register
       </Modal.Title>
 
-      <Form className="px-4">
-        <Form.Group className="mb-3" controlId="formFullname">
+      <Form className="px-4" onSubmit={handleSubmitForm.mutate}>
+        {/*  */}
+        <Form.Group className="mb-3" controlId="name">
           <Form.Control
             type="text"
-            name="fullName"
+            name="name"
             placeholder="Full Name"
-            value={input.fullName}
+            value={input.name}
             onChange={handleInputChange}
             className="py-2 px-2 fs-5 rounded-3"
             style={{
@@ -223,8 +179,8 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
               color: "#613D2B",
             }}
           />
-          {error.fullName && (
-            <Form.Text className="text-danger">{error.fullName}</Form.Text>
+          {error.name && (
+            <Form.Text className="text-danger">{error.name}</Form.Text>
           )}
         </Form.Group>
 
@@ -268,31 +224,24 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
           )}
         </Form.Group>
 
-        {/* {handleSubmitForm.isLoading ? (
+        {handleSubmitForm.isLoading ? (
           <Button
-            variant="warning"
             type="submit"
-            className="w-100 text-white fs-4 fw-bolder"
+            className="w-100 text-white fs-4 fw-bolder hoveredButton"
+            style={{ backgroundColor: "#613D2B", border: "none" }}
             disabled
           >
             <Spinner animation="border" variant="light" />
           </Button>
         ) : (
           <Button
-            variant="warning"
             type="submit"
-            className="w-100 text-white fs-4 fw-bolder"
+            className="w-100 text-white fs-4 fw-bolder hoveredButton"
+            style={{ backgroundColor: "#613D2B", border: "none" }}
           >
             Register
           </Button>
-        )} */}
-        <Button
-          type="submit"
-          className="w-100 text-white fs-4 fw-bolder hoveredButton"
-          style={{ backgroundColor: "#613D2B", border: "none" }}
-        >
-          Register
-        </Button>
+        )}
 
         <p className="fs-5 my-3 mx-auto text-center pt-1">
           Already have an account? ? Klik{" "}

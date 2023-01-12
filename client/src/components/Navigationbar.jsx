@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { Navbar, Container, Nav, Button, Image } from "react-bootstrap";
+import { useContext, useState } from "react";
+import { Button, Container, Image, Nav, Navbar } from "react-bootstrap";
+import { useQuery } from "react-query";
 import { Link, useNavigate } from "react-router-dom";
+import { API } from "../config/api";
+import { MyContext } from "../store/Store";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
 import DropdownProfile from "./DropdownProfile";
@@ -10,6 +13,20 @@ const Navigationbar = () => {
   const [registerForm, setRegisterForm] = useState(false);
 
   const navigate = useNavigate();
+
+  const { loginState } = useContext(MyContext);
+
+  const { data: userProfile } = useQuery(
+    "userProfileCache",
+    async () => {
+      const response = await API.get("/user");
+      return response.data.data;
+    },
+    {
+      enabled: !!loginState.isLogin,
+    }
+  );
+
 
   return (
     <Navbar
@@ -32,72 +49,82 @@ const Navigationbar = () => {
           />
         </Link>
 
-        {/* <Nav className="ms-auto">
-          <Button
-            id="navLoginButton"
-            className="mx-2 d-none d-lg-block fw-5 hoveredButton"
-            style={{
-              width: 150,
-              border: "2px solid #613D2B",
-              color: "#613D2B",
-              backgroundColor: "#F5F5F5",
-              fontWeight: "bold",
-            }}
-            onClick={() => {
-              setLoginForm(true);
-            }}
-          >
-            Login
-          </Button>
-          <Button
-            className="text-white mx-2 d-none d-lg-block hoveredButton"
-            style={{
-              width: 150,
-              backgroundColor: "#613D2B",
-              border: "2px solid #613D2B",
-              fontWeight: "bold",
-            }}
-            onClick={() => {
-              setRegisterForm(true);
-            }}
-          >
-            Register
-          </Button>
-        </Nav> */}
-
-        <Nav className="ms-auto">
-          <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
-            <Image
-              src="/assets/Basket.svg"
-              style={{ width: 50, cursor: "pointer" }}
-              className="me-4"
-              onClick={() => {
-                navigate("/cart");
-              }}
-            />
-            <div
-              className="position-absolute px-2 rounded-circle text-white"
+        {!loginState.isLogin ? (
+          <Nav className="ms-auto">
+            <Button
+              id="navLoginButton"
+              className="mx-2 d-none d-lg-block fw-5 hoveredButton"
               style={{
-                backgroundColor: "red",
-                top: 25,
-                right: 20,
-                cursor: "pointer",
+                width: 150,
+                border: "2px solid #613D2B",
+                color: "#613D2B",
+                backgroundColor: "#F5F5F5",
+                fontWeight: "bold",
               }}
               onClick={() => {
-                navigate("/cart");
+                setLoginForm(true);
               }}
             >
-              2
+              Login
+            </Button>
+            <Button
+              className="text-white mx-2 d-none d-lg-block hoveredButton"
+              style={{
+                width: 150,
+                backgroundColor: "#613D2B",
+                border: "2px solid #613D2B",
+                fontWeight: "bold",
+              }}
+              onClick={() => {
+                setRegisterForm(true);
+              }}
+            >
+              Register
+            </Button>
+          </Nav>
+        ) : (
+          <Nav className="ms-auto">
+            <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
+              <Image
+                src="/assets/Basket.svg"
+                style={{ width: 50, cursor: "pointer" }}
+                className="me-4"
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              />
+              <div
+                className="position-absolute px-2 rounded-circle text-white"
+                style={{
+                  backgroundColor: "red",
+                  top: 25,
+                  right: 20,
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              >
+                2
+              </div>
             </div>
-          </div>
-          <DropdownProfile>
-            <Image
-              src="/assets/profil.jpg"
-              style={{ width: 75 }}
-              roundedCircle
-            />
-          </DropdownProfile>
-        </Nav>
+            <DropdownProfile>
+              {userProfile !== undefined && userProfile.image !== "" ? (
+                <Image
+                  src={userProfile.image}
+                  style={{ width: 75 }}
+                  roundedCircle
+                />
+              ) : (
+                <Image
+                  src="/assets/profil.jpg"
+                  style={{ width: 75 }}
+                  roundedCircle
+                />
+              )}
+            </DropdownProfile>
+          </Nav>
+        )}
       </Container>
 
       {/* Login Modal */}

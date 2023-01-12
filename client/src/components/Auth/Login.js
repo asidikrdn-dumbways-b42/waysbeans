@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import { Button, Modal, Form, Spinner } from "react-bootstrap";
-// import { useMutation } from "react-query";
-// import { API, setAuthToken } from "../../config/api";
-// import { loginSuccess } from "../../store/actions/loginAction";
-// import { MyContext } from "../../store/Store";
+import { useMutation } from "react-query";
+import { API, setAuthToken } from "../../config/api";
+import { loginSuccess } from "../../store/actions/loginAction";
+import { MyContext } from "../../store/Store";
 import Swal from "sweetalert2";
 
 const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
@@ -11,7 +11,7 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
     email: "",
     password: "",
   });
-  // const { dispatchLogin } = useContext(MyContext);
+  const { dispatchLogin } = useContext(MyContext);
 
   const handleInputChange = (e) => {
     setInput((prevState) => {
@@ -19,33 +19,33 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
     });
   };
 
-  // const handleLogin = useMutation(async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const response = await API.post("/login", input);
-  //     if (response.data.code === 200) {
-  //       setAuthToken(response.data.data.token);
-  //       dispatchLogin(loginSuccess(response.data.data));
-
-  //       setInput({
-  //         email: "",
-  //         password: "",
-  //       });
-  //       setLoginForm(false);
-  //       Swal.fire({
-  //         title: "Login Success",
-  //         icon: "success",
-  //       });
-  //     }
-  //   } catch (e) {
-  //     // console.log(e);
-  //     Swal.fire({
-  //       title: "Login Failed",
-  //       text: e.response.data.message,
-  //       icon: "error",
-  //     });
-  //   }
-  // });
+  const handleLogin = useMutation(async (e) => {
+    e.preventDefault();
+    try {
+      const response = await API.post("/login", input);
+      // console.log("Login Response :", response);
+      if (response.data.status === "success") {
+        setAuthToken(response.data.data.token);
+        dispatchLogin(loginSuccess(response.data.data));
+        setInput({
+          email: "",
+          password: "",
+        });
+        setLoginForm(false);
+        Swal.fire({
+          title: "Login Success",
+          icon: "success",
+        });
+      }
+    } catch (e) {
+      // console.log(e);
+      Swal.fire({
+        title: "Login Failed",
+        text: e.response.data.message,
+        icon: "error",
+      });
+    }
+  });
 
   return (
     <Modal
@@ -72,7 +72,7 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
         Login
       </Modal.Title>
 
-      <Form className="px-4">
+      <Form className="px-4" onSubmit={handleLogin.mutate}>
         <Form.Group className="mb-3" controlId="formEmail">
           <Form.Control
             type="email"
@@ -107,31 +107,24 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
           />
         </Form.Group>
 
-        {/* {handleLogin.isLoading ? (
+        {handleLogin.isLoading ? (
           <Button
-            variant="warning"
             type="submit"
-            className="w-100 text-white fs-4 fw-bolder"
+            className="w-100 text-white fs-4 fw-bolder hoveredButton"
+            style={{ backgroundColor: "#613D2B", border: "none" }}
             disabled
           >
             <Spinner animation="border" variant="light" />
           </Button>
         ) : (
           <Button
-            variant="warning"
             type="submit"
-            className="w-100 text-white fs-4 fw-bolder"
+            className="w-100 text-white fs-4 fw-bolder hoveredButton"
+            style={{ backgroundColor: "#613D2B", border: "none" }}
           >
             Login
           </Button>
-        )} */}
-        <Button
-          type="submit"
-          className="w-100 text-white fs-4 fw-bolder hoveredButton"
-          style={{ backgroundColor: "#613D2B", border: "none" }}
-        >
-          Login
-        </Button>
+        )}
 
         <p className="fs-5 my-3 mx-auto text-center pt-1">
           Don't have an account? ? Klik{" "}
