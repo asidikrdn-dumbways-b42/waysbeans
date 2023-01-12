@@ -2,7 +2,7 @@ import { Button, Col, Container, Row, Card } from "react-bootstrap";
 import { useContext } from "react";
 import { MyContext } from "../store/Store";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { API } from "../config/api";
 
 const Detail = () => {
@@ -23,6 +23,19 @@ const Detail = () => {
       }
     }
   );
+
+  const handleAddCart = useMutation(async () => {
+    try {
+      const response = await API.post(`/order`, {
+        product_id: parseInt(id),
+      });
+      if (response.data.status === "success") {
+        navigate("/cart");
+      }
+    } catch (e) {
+      console.log(e.response.data.message);
+    }
+  });
 
   return (
     <main style={{ marginTop: 150 }}>
@@ -70,6 +83,7 @@ const Detail = () => {
                     border: "2px solid #613D2B",
                     fontWeight: "bold",
                   }}
+                  onClick={handleAddCart.mutate}
                 >
                   Add to Cart
                 </Button>
