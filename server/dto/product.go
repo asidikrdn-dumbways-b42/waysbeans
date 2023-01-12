@@ -14,15 +14,14 @@ type UpdateProductRequest struct {
 	Price       int    `form:"price"`
 	Description string `form:"description"`
 	Image       string `form:"image"`
-	Status      string `form:"status"`
 }
 
 type ProductResponse struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
-	Stock       int    `json:"stock"`
 	Price       int    `json:"price"`
-	Description string `json:"description"`
+	Stock       int    `json:"stock"`
 	Image       string `json:"image"`
+	Description string `json:"description"`
 	Status      string `json:"status"`
 }

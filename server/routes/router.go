@@ -6,4 +6,5 @@ import "github.com/gorilla/mux"
 func RouterInit(r *mux.Router) {
 	Auth(r)
 	User(r)
+	Product(r)
 }

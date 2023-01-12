@@ -51,7 +51,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 	if status != transaction.Status && status == "success" {
 		var product models.Product
 		r.db.First(&product, transaction.ProductID)
-		product.StockAvailable = product.StockAvailable - transaction.Qty
+		product.Stock = product.Stock - transaction.Qty
 		r.db.Model(&product).Updates(product)
 	}
 
@@ -59,7 +59,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 	if status != transaction.Status && status == "reject" {
 		var product models.Product
 		r.db.First(&product, transaction.ProductID)
-		product.StockAvailable = product.StockAvailable + transaction.Qty
+		product.Stock = product.Stock + transaction.Qty
 		r.db.Model(&product).Updates(product)
 	}
 

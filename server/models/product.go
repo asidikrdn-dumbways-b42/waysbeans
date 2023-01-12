@@ -1,14 +1,13 @@
 package models
 
 type Product struct {
-	ID             int    `json:"id"`
-	Name           string `json:"name" gorm:"type: varchar(255)"`
-	Price          int    `json:"price" gorm:"type: int"`
-	Stock          int    `json:"stock" gorm:"type: int"`
-	StockAvailable int    `json:"stock_available" gorm:"type: int"`
-	Image          string `json:"image" gorm:"type: varchar(255)"`
-	Description    string `json:"description"`
-	Status         string `json:"status" gorm:"type: varchar(255)"`
+	ID          int    `json:"id"`
+	Name        string `json:"name" gorm:"type: varchar(255)"`
+	Price       int    `json:"price" gorm:"type: int"`
+	Stock       int    `json:"stock" gorm:"type: int"`
+	Image       string `json:"image" gorm:"type: varchar(255)"`
+	Description string `json:"description"`
+	Status      string `json:"status" gorm:"type: varchar(255)"`
 }
 
 type ProductResponse struct {

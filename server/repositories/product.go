@@ -5,6 +5,7 @@ import "waysbeans/models"
 type ProductRepository interface {
 	FindProducts() ([]models.Product, error)
 	GetProduct(ID int) (models.Product, error)
+	CreateProduct(newProduct models.Product) (models.Product, error)
 	UpdateProduct(product models.Product) (models.Product, error)
 	DeleteProduct(product models.Product) (models.Product, error)
 }
@@ -12,14 +13,14 @@ type ProductRepository interface {
 // mengambil semua data product
 func (r *repository) FindProducts() ([]models.Product, error) {
 	var products []models.Product
-	err := r.db.Find(&products).Error
+	err := r.db.Where("status = ?", "active").Find(&products).Error
 	return products, err
 }
 
 // mengambil 1 product berdasarkan ID
 func (r *repository) GetProduct(ID int) (models.Product, error) {
 	var product models.Product
-	err := r.db.First(&product, ID).Error
+	err := r.db.Where("status = ?", "active").First(&product, ID).Error
 	return product, err
 }
 
