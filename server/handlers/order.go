@@ -8,6 +8,7 @@ import (
 	"waysbeans/models"
 	"waysbeans/repositories"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -22,7 +23,10 @@ func HandlerOrder(orderRepository repositories.OrderRepository) *handlerOrder {
 func (h *handlerOrder) FindOrders(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	order, err := h.OrderRepository.FindOrders()
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	idUser := int(userInfo["id"].(float64))
+
+	order, err := h.OrderRepository.FindOrders(idUser)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		res := dto.ErrorResult{
@@ -67,11 +71,15 @@ func (h *handlerOrder) AddOrder(w http.ResponseWriter, r *http.Request) {
 	var request dto.AddOrderRequest
 	json.NewDecoder(r.Body).Decode(&request)
 
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	idUser := int(userInfo["id"].(float64))
+
 	// periksa order dengan product id yang sama
-	order, err := h.OrderRepository.GetOrderByProduct(request.ProductID)
+	order, err := h.OrderRepository.GetOrderByProduct(request.ProductID, idUser)
 	if err != nil {
 		// bila belum ada, maka buat baru
 		newOrder := models.Order{
+			UserID:    idUser,
 			ProductID: request.ProductID,
 			OrderQty:  1,
 		}

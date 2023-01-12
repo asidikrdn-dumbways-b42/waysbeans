@@ -2,6 +2,8 @@ package models
 
 type Order struct {
 	ID            int
+	UserID        int `gorm:"type: int"`
+	User          UserResponse
 	TransactionID string `gorm:"type: varchar(255)"`
 	Transaction   TransactionResponse
 	ProductID     int `gorm:"type: int"`
