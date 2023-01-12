@@ -273,7 +273,6 @@ func (h *handlerAuth) CheckAuth(w http.ResponseWriter, r *http.Request) {
 
 	// membuat data yang akan disisipkan di response
 	var authResponse dto.AuthResponse
-	// authResponse.UserID = int(claims["id"].(float64))
 	authResponse.ID = int(claims["id"].(float64))
 	authResponse.Name = claims["name"].(string)
 	authResponse.Email = claims["email"].(string)
@@ -365,7 +364,7 @@ func SendVerification(token string, user dto.RegisterRequest, r *http.Request) {
 																<div>
 																	<img
 																		src="https://dewetour-test.netlify.app/assets/NavbarIcon.svg"
-																		alt="Vercel"
+																		alt="WaysBeans"
 																		class="CToWUd"
 																		data-bit="iit"
 																	/>
@@ -431,7 +430,7 @@ func SendVerification(token string, user dto.RegisterRequest, r *http.Request) {
 																	<a
 																		href="%s"
 																		style="
-																			background-color: #FFC107;
+																			background-color: #613D2B;
 																			border-radius: 5px;
 																			color: whitesmoke;
 																			display: inline-block;
