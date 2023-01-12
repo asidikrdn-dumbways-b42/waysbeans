@@ -27,6 +27,13 @@ const Navigationbar = () => {
     }
   );
 
+  const { data: orderCart } = useQuery("orderCartCache", async () => {
+    try {
+      const response = await API.get(`/orders`);
+      return response.data.data;
+    } catch (e) {}
+  });
+
   return (
     <Navbar
       bg="light"
@@ -105,7 +112,7 @@ const Navigationbar = () => {
                     navigate("/cart");
                   }}
                 >
-                  2
+                  {orderCart?.length}
                 </div>
               </div>
             )}
