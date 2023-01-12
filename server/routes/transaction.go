@@ -16,4 +16,5 @@ func Transaction(r *mux.Router) {
 	r.HandleFunc("/transactions", middleware.AdminAuth(h.FindTransactions)).Methods("GET")
 	r.HandleFunc("/order", middleware.UserAuth(h.FindTransactionsByUser)).Methods("GET")
 	r.HandleFunc("/transaction/{id}", middleware.UserAuth(h.GetDetailTransaction)).Methods("GET")
+	r.HandleFunc("/transaction", middleware.UserAuth(h.CreateTransaction)).Methods("POST")
 }

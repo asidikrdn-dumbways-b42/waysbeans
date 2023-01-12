@@ -14,7 +14,7 @@ type TransactionRepository interface {
 // mengambil semua transaksi
 func (r *repository) FindTransactions() ([]models.Transaction, error) {
 	var transaction []models.Transaction
-	err := r.db.Preload("Product").Preload("User").Order("order_date desc").Find(&transaction).Error
+	err := r.db.Preload("User").Preload("Order").Preload("Order.Product").Order("order_date desc").Find(&transaction).Error
 
 	return transaction, err
 }
@@ -22,7 +22,7 @@ func (r *repository) FindTransactions() ([]models.Transaction, error) {
 // mengambil semua transaksi berdasarkan user tertentu
 func (r *repository) FindTransactionsByUser(UserId int) ([]models.Transaction, error) {
 	var transaction []models.Transaction
-	err := r.db.Preload("Product").Preload("User").Where("user_id = ?", UserId).Order("order_date desc").Find(&transaction).Error
+	err := r.db.Preload("User").Preload("Order").Preload("Order.Product").Where("user_id = ?", UserId).Order("order_date desc").Find(&transaction).Error
 
 	return transaction, err
 }
@@ -30,7 +30,7 @@ func (r *repository) FindTransactionsByUser(UserId int) ([]models.Transaction, e
 // mengambil 1 transaksi berdasarkan id
 func (r *repository) GetTransaction(ID string) (models.Transaction, error) {
 	var transaction models.Transaction
-	err := r.db.Preload("Product").Preload("User").First(&transaction, "id = ?", ID).Error
+	err := r.db.Preload("User").Preload("Order").Preload("Order.Product").First(&transaction, "id = ?", ID).Error
 
 	return transaction, err
 }
@@ -45,22 +45,26 @@ func (r *repository) CreateTransaction(newTransaction models.Transaction) (model
 // mengupdate status transaksi berdasarkan id
 func (r *repository) UpdateTransaction(status string, trxId string) (models.Transaction, error) {
 	var transaction models.Transaction
-	r.db.Preload("Product").Preload("User").First(&transaction, "id = ?", trxId)
+	r.db.Preload("User").Preload("Order").Preload("Order.Product").First(&transaction, "id = ?", trxId)
 
 	// If is different & Status is "success" decrement available quota on data trip
 	if status != transaction.Status && status == "success" {
-		var product models.Product
-		// r.db.First(&product, transaction.ProductID)
-		product.Stock = product.Stock - transaction.Qty
-		r.db.Model(&product).Updates(product)
+		for _, ordr := range transaction.Order {
+			var product models.Product
+			r.db.First(&product, ordr.Product.ID)
+			product.Stock = product.Stock - ordr.OrderQty
+			r.db.Model(&product).Updates(product)
+		}
 	}
 
 	// If is different & Status is "reject" decrement available quota on data trip
 	if status != transaction.Status && status == "reject" {
-		var product models.Product
-		// r.db.First(&product, transaction.ProductID)
-		product.Stock = product.Stock + transaction.Qty
-		r.db.Model(&product).Updates(product)
+		for _, ordr := range transaction.Order {
+			var product models.Product
+			r.db.First(&product, ordr.Product.ID)
+			product.Stock = product.Stock + ordr.OrderQty
+			r.db.Model(&product).Updates(product)
+		}
 	}
 
 	// change transaction status
@@ -78,7 +82,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 // mengupdate token midtrans pada transaksi tertentu berdasarkan id
 func (r *repository) UpdateTokenTransaction(token string, trxId string) (models.Transaction, error) {
 	var transaction models.Transaction
-	r.db.Preload("Product").Preload("User").First(&transaction, "id = ?", trxId)
+	r.db.Preload("User").Preload("Order").Preload("Order.Product").First(&transaction, "id = ?", trxId)
 
 	// change transaction token
 	transaction.MidtransID = token
