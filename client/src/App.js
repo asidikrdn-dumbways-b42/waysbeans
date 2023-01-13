@@ -16,9 +16,17 @@ import { useContext, useEffect } from "react";
 import PublicRoute from "./components/PrivateRoute/PublicRoute";
 import UserPrivateRoute from "./components/PrivateRoute/UserPrivateRoute";
 import AdminPrivateRoute from "./components/PrivateRoute/AdminPrivateRoute";
+import { useQuery } from "react-query";
 
 function App() {
   const { dispatchLogin } = useContext(MyContext);
+
+  const { refetch: orderCartRefetch } = useQuery("orderCartCache", async () => {
+    try {
+      const response = await API.get(`/orders`);
+      return response.data.data;
+    } catch (e) {}
+  });
 
   const checkAuth = async () => {
     if (localStorage.getItem("token")) {
@@ -28,6 +36,7 @@ function App() {
       const response = await API.get("/check-auth");
       if (response.data.status === "success") {
         dispatchLogin(authSuccess(response.data.data));
+        orderCartRefetch();
       }
     } catch (err) {
       localStorage.removeItem("token");
