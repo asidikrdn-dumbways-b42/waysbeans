@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Container, Table, Spinner } from "react-bootstrap";
 import { useQuery } from "react-query";
 import Product from "../components/Product";
 import UpdateProductModal from "../components/UpdateProductModal";
@@ -11,7 +11,7 @@ const ProductList = () => {
 
   const {
     data: productData,
-    // isisLoading: productDataIsLoading,
+    isisLoading: productDataIsLoading,
     refetch: productDataRefetch,
   } = useQuery("productDataCache", async (e) => {
     try {
@@ -30,54 +30,63 @@ const ProductList = () => {
         productDataRefetch={productDataRefetch}
         currentProductData={currentProductData}
       />
-      <Container fluid style={{ padding: "0 150px" }}>
-        <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
-          List Product
-        </h1>
-        <Table
-          bordered
-          className="mt-5"
-          // style={{ border: "1px solid #8E8E8E" }}
+      {productDataIsLoading ? (
+        <Container
+          className="d-flex flex-row justify-content-center align-items-center"
+          style={{ minHeight: "80vh" }}
         >
-          <thead>
-            <tr
-              style={{
-                backgroundColor: "#E5E5E5",
-                border: "1px solid #8E8E8E",
-              }}
-            >
-              <th className="py-3 text-start">No</th>
-              <th className="py-3 text-center">Image</th>
-              <th className="py-3 text-center">Name</th>
-              <th className="py-3 text-center" style={{ width: "10%" }}>
-                Stock
-              </th>
-              <th className="py-3 text-center" style={{ width: "10%" }}>
-                Price
-              </th>
-              <th className="py-3 text-center" style={{ width: "25%" }}>
-                Description
-              </th>
-              <th className="py-3 text-center" style={{ width: "20%" }}>
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {productData?.map((product, i) => {
-              return (
-                <Product
-                  index={i}
-                  product={product}
-                  productDataRefetch={productDataRefetch}
-                  setCurrentProductData={setCurrentProductData}
-                  setShowUpdateProductModal={setShowUpdateProductModal}
-                />
-              );
-            })}
-          </tbody>
-        </Table>
-      </Container>
+          <Spinner animation="border" size="xl" style={{ color: "#613D2B" }} />
+        </Container>
+      ) : (
+        <Container fluid style={{ padding: "0 150px" }}>
+          <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
+            List Product
+          </h1>
+          <Table
+            bordered
+            className="my-5"
+            // style={{ border: "1px solid #8E8E8E" }}
+          >
+            <thead>
+              <tr
+                style={{
+                  backgroundColor: "#E5E5E5",
+                  border: "1px solid #8E8E8E",
+                }}
+              >
+                <th className="py-3 text-start">No</th>
+                <th className="py-3 text-center">Image</th>
+                <th className="py-3 text-center">Name</th>
+                <th className="py-3 text-center" style={{ width: "10%" }}>
+                  Stock
+                </th>
+                <th className="py-3 text-center" style={{ width: "10%" }}>
+                  Price
+                </th>
+                <th className="py-3 text-center" style={{ width: "25%" }}>
+                  Description
+                </th>
+                <th className="py-3 text-center" style={{ width: "20%" }}>
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {productData?.map((product, i) => {
+                return (
+                  <Product
+                    index={i}
+                    product={product}
+                    productDataRefetch={productDataRefetch}
+                    setCurrentProductData={setCurrentProductData}
+                    setShowUpdateProductModal={setShowUpdateProductModal}
+                  />
+                );
+              })}
+            </tbody>
+          </Table>
+        </Container>
+      )}
     </main>
   );
 };
