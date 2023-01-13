@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { CgAttachment } from "react-icons/cg";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { API } from "../config/api";
 import { useNavigate } from "react-router-dom";
 
@@ -28,18 +28,6 @@ const AddProduct = () => {
     }
   };
 
-  const { refeftch: productDataRefetch } = useQuery(
-    "productDataCache",
-    async () => {
-      try {
-        const response = await API.get("/products");
-        return response.data.data;
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
   const handleAddProduct = useMutation(async (e) => {
     e.preventDefault();
 
@@ -55,9 +43,8 @@ const AddProduct = () => {
       const response = await API.post(`/product`, body);
       console.log(response);
       if (response.data.status === "success") {
-        console.log('berhasil')
+        console.log("berhasil");
         navigate("/list-product");
-        // productDataRefetch();
       }
     } catch (e) {}
   });
