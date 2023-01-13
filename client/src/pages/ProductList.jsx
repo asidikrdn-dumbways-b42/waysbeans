@@ -5,7 +5,7 @@ import { API } from "../config/api";
 const ProductList = () => {
   const {
     data: productData,
-    isisLoading: productDataIsLoading,
+    // isisLoading: productDataIsLoading,
     refetch: productDataRefetch,
   } = useQuery("productDataCache", async (e) => {
     try {

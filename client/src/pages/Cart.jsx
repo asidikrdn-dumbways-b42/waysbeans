@@ -15,7 +15,7 @@ const Cart = () => {
 
   const {
     data: orderCart,
-    isLoading: orderCartIsLoading,
+    // isLoading: orderCartIsLoading,
     refetch: orderCartRefetch,
   } = useQuery("orderCartCache", async () => {
     try {
@@ -75,6 +75,7 @@ const Cart = () => {
     }
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let total = orderCart?.reduce((sum, order) => {
       return sum + order.order_qty * order.product.price;
