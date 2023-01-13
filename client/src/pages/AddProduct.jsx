@@ -1,7 +1,67 @@
+import { useState } from "react";
 import { Button, Col, Container, Form, Image, Row } from "react-bootstrap";
 import { CgAttachment } from "react-icons/cg";
+import { useMutation, useQuery } from "react-query";
+import { API } from "../config/api";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+  const navigate = useNavigate();
+
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    description: "",
+    image: "",
+  });
+
+  const handleChange = (e) => {
+    if (e.target.name === "image") {
+      setNewProduct((prevState) => {
+        return { ...prevState, [e.target.name]: e.target.files };
+      });
+    } else {
+      setNewProduct((prevState) => {
+        return { ...prevState, [e.target.name]: e.target.value };
+      });
+    }
+  };
+
+  const { refeftch: productDataRefetch } = useQuery(
+    "productDataCache",
+    async () => {
+      try {
+        const response = await API.get("/products");
+        return response.data.data;
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  const handleAddProduct = useMutation(async (e) => {
+    e.preventDefault();
+
+    try {
+      let body = new FormData();
+
+      body.append("name", newProduct.name);
+      body.append("price", newProduct.price);
+      body.append("stock", newProduct.stock);
+      body.append("description", newProduct.description);
+      body.append("image", newProduct.image[0]);
+
+      const response = await API.post(`/product`, body);
+      console.log(response);
+      if (response.data.status === "success") {
+        console.log('berhasil')
+        navigate("/list-product");
+        // productDataRefetch();
+      }
+    } catch (e) {}
+  });
+
   return (
     <main style={{ marginTop: 150 }}>
       <Container>
@@ -11,13 +71,14 @@ const AddProduct = () => {
             <h1 className="display-6 fw-bold my-3" style={{ color: "#613D2B" }}>
               Add Product
             </h1>
-            <Form>
+            <Form onSubmit={handleAddProduct.mutate}>
               {/* product name */}
               <Form.Group className="mb-4" controlId="formName">
-                {/* <Form.Label className="h3 fw-bolder">Name</Form.Label> */}
                 <Form.Control
                   type="text"
                   name="name"
+                  value={newProduct.name}
+                  onChange={handleChange}
                   placeholder="Name"
                   className="py-2 px-2 fs-5 rounded-3"
                   style={{
@@ -38,6 +99,8 @@ const AddProduct = () => {
                 <Form.Control
                   type="number"
                   name="stock"
+                  value={newProduct.stock}
+                  onChange={handleChange}
                   placeholder="Stock"
                   className="py-2 px-2 fs-5 rounded-3"
                   style={{
@@ -58,6 +121,8 @@ const AddProduct = () => {
                 <Form.Control
                   type="number"
                   name="price"
+                  value={newProduct.price}
+                  onChange={handleChange}
                   placeholder="Price"
                   className="py-2 px-2 fs-5 rounded-3"
                   style={{
@@ -78,6 +143,8 @@ const AddProduct = () => {
                 <Form.Control
                   as="textarea"
                   name="description"
+                  value={newProduct.description}
+                  onChange={handleChange}
                   placeholder="Products Description"
                   className="py-2 px-2 fs-5 rounded-3"
                   style={{
@@ -106,6 +173,7 @@ const AddProduct = () => {
                 <Form.Control
                   type="file"
                   name="image"
+                  onChange={handleChange}
                   id="img-addproduct"
                   size="lg"
                   className="d-none"
@@ -164,11 +232,13 @@ const AddProduct = () => {
 
           {/* Image */}
           <Col lg={6}>
-            <Image
-              src="/assets/product.svg"
-              alt="product image"
-              className="w-100 p-5"
-            />
+            {newProduct.image && (
+              <Image
+                src={URL.createObjectURL(newProduct.image[0])}
+                alt={newProduct.name}
+                className="w-100 p-5"
+              />
+            )}
           </Col>
         </Row>
       </Container>
