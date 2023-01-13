@@ -14,7 +14,8 @@ const AdminPrivateRoute = () => {
       ) : loginState?.isLogin && loginState.userInfo?.role === "admin" ? (
         <Outlet />
       ) : (
-        <Navigate to="/" />
+        loginState?.isLogin &&
+        loginState.userInfo?.role === "user" && <Navigate to="/" />
       )}
     </>
   );

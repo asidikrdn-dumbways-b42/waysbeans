@@ -15,7 +15,8 @@ const UserPrivateRoute = () => {
       ) : loginState?.isLogin && loginState.userInfo?.role === "user" ? (
         <Outlet />
       ) : (
-        <Navigate to="/" />
+        loginState?.isLogin &&
+        loginState.userInfo?.role === "admin" && <Navigate to="/" />
       )}
     </>
   );
