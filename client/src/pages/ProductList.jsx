@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Button, Container, Table, Image } from "react-bootstrap";
-import { useQuery, useMutation } from "react-query";
+import { Container, Table } from "react-bootstrap";
+import { useQuery } from "react-query";
+import Product from "../components/Product";
 import UpdateProductModal from "../components/UpdateProductModal";
 import { API } from "../config/api";
 
@@ -18,17 +19,6 @@ const ProductList = () => {
       return response.data.data;
     } catch (err) {
       console.log(err);
-    }
-  });
-
-  const handleDeleteProduct = useMutation(async (id) => {
-    try {
-      const response = await API.delete(`/product/${id}`);
-      if (response.data.status === "success") {
-        productDataRefetch();
-      }
-    } catch (e) {
-      console.log(e);
     }
   });
 
@@ -76,49 +66,13 @@ const ProductList = () => {
           <tbody>
             {productData?.map((product, i) => {
               return (
-                <tr key={product.id}>
-                  <td className="text-center" valign="middle">
-                    {i + 1}
-                  </td>
-                  <td className="text-center" valign="middle">
-                    <Image src={product.image} alt={product.name} />
-                  </td>
-                  <td className="text-center" valign="middle">
-                    <h3>{product.name}</h3>
-                  </td>
-                  <td className={"text-center"} valign="middle">
-                    <h5>{product.stock} pcs</h5>
-                  </td>
-                  <td className={"text-center"} valign="middle">
-                    <h5>Rp {product.price.toLocaleString()},-</h5>
-                  </td>
-                  <td className={"text-center"} valign="middle">
-                    <p style={{ textAlign: "justify" }}>
-                      {product.description}
-                    </p>
-                  </td>
-                  <td className="text-center" valign="middle">
-                    <Button
-                      variant="danger"
-                      className="py-1 px-4 mx-2"
-                      onClick={() => {
-                        handleDeleteProduct.mutate(product.id);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant="success"
-                      className="py-1 px-4 mx-2"
-                      onClick={() => {
-                        setCurrentProductData(product);
-                        setShowUpdateProductModal(true);
-                      }}
-                    >
-                      Update
-                    </Button>
-                  </td>
-                </tr>
+                <Product
+                  index={i}
+                  product={product}
+                  productDataRefetch={productDataRefetch}
+                  setCurrentProductData={setCurrentProductData}
+                  setShowUpdateProductModal={setShowUpdateProductModal}
+                />
               );
             })}
           </tbody>
