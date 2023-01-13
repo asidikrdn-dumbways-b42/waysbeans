@@ -65,8 +65,8 @@ const ProductList = () => {
           <tbody>
             {productData?.map((product, i) => {
               return (
-                <tr>
-                  <td>{i + 1}</td>
+                <tr key={product.id}>
+                  <td valign="middle">{i + 1}</td>
                   <td className="text-center" valign="middle">
                     <Image src={product.image} alt={product.name} />
                   </td>
