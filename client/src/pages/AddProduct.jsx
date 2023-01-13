@@ -9,7 +9,14 @@ import Swal from "sweetalert2";
 const AddProduct = () => {
   const navigate = useNavigate();
 
-  const [newProduct, setNewProduct] = useState({
+  const [inputProduct, setInputProduct] = useState({
+    name: "",
+    price: "",
+    stock: "",
+    description: "",
+    image: "",
+  });
+  const [error, setError] = useState({
     name: "",
     price: "",
     stock: "",
@@ -17,13 +24,99 @@ const AddProduct = () => {
     image: "",
   });
 
+  const validation = (input) => {
+    const newError = {
+      name: "",
+      price: "",
+      stock: "",
+      description: "",
+      image: "",
+    };
+
+    let inputProduct = {
+      name: "",
+      price: "",
+      stock: "",
+      description: "",
+      image: "",
+    };
+
+    // name
+    inputProduct.name = input.name.trim();
+    if (inputProduct.name === "") {
+      newError.name = "Please fill out this field";
+    } else {
+      newError.name = "";
+    }
+
+    // price
+    inputProduct.price = input.price;
+    if (inputProduct.price === "" || isNaN(inputProduct.price)) {
+      newError.price = "Please fill out this field";
+    } else if (inputProduct.price < 1) {
+      newError.price = "can't be less than 1";
+    } else {
+      newError.price = "";
+    }
+
+    // stock
+    inputProduct.stock = input.stock;
+    if (inputProduct.stock === "" || isNaN(inputProduct.stock)) {
+      newError.stock = "Please fill out this field";
+    } else if (inputProduct.stock < 1) {
+      newError.stock = "can't be less than 1";
+    } else {
+      newError.stock = "";
+    }
+
+    // description
+    inputProduct.description = input.description.trim();
+    if (inputProduct.description === "") {
+      newError.description = "Please fill out this field";
+    } else {
+      newError.description = "";
+    }
+
+    // image
+    inputProduct.image = input.image;
+    if (inputProduct.image.length <= 0) {
+      newError.image = "Please upload image";
+    } else {
+      newError.image = "";
+    }
+
+    // console.log(inputProduct);
+
+    // jika semua newErrornya kosong, maka kirim data product baru tersebut
+    if (
+      newError.name === "" &&
+      newError.price === "" &&
+      newError.stock === "" &&
+      newError.description === "" &&
+      newError.image === ""
+    ) {
+      // reset error
+      setError({
+        name: "",
+        price: "",
+        stock: "",
+        description: "",
+        image: "",
+      });
+      return inputProduct;
+    } else {
+      setError(newError);
+      return "";
+    }
+  };
+
   const handleChange = (e) => {
     if (e.target.name === "image") {
-      setNewProduct((prevState) => {
+      setInputProduct((prevState) => {
         return { ...prevState, [e.target.name]: e.target.files };
       });
     } else {
-      setNewProduct((prevState) => {
+      setInputProduct((prevState) => {
         return { ...prevState, [e.target.name]: e.target.value };
       });
     }
@@ -31,6 +124,8 @@ const AddProduct = () => {
 
   const handleAddProduct = useMutation(async (e) => {
     e.preventDefault();
+
+    let newProduct = validation(inputProduct);
 
     try {
       let body = new FormData();
@@ -67,7 +162,7 @@ const AddProduct = () => {
                 <Form.Control
                   type="text"
                   name="name"
-                  value={newProduct.name}
+                  value={inputProduct.name}
                   onChange={handleChange}
                   placeholder="Name"
                   className="py-2 px-2 fs-5 rounded-3"
@@ -78,18 +173,17 @@ const AddProduct = () => {
                     color: "#613D2B",
                   }}
                 />
-                {/* {error.name && (
+                {error.name && (
                   <Form.Text className="text-danger">{error.name}</Form.Text>
-                )} */}
+                )}
               </Form.Group>
 
               {/* stock */}
               <Form.Group className="mb-4" controlId="formStock">
-                {/* <Form.Label className="h3 fw-bolder">Stock</Form.Label> */}
                 <Form.Control
                   type="number"
                   name="stock"
-                  value={newProduct.stock}
+                  value={inputProduct.stock}
                   onChange={handleChange}
                   placeholder="Stock"
                   className="py-2 px-2 fs-5 rounded-3"
@@ -100,18 +194,17 @@ const AddProduct = () => {
                     color: "#613D2B",
                   }}
                 />
-                {/* {error.stock && (
+                {error.stock && (
                   <Form.Text className="text-danger">{error.stock}</Form.Text>
-                )} */}
+                )}
               </Form.Group>
 
               {/* price */}
               <Form.Group className="mb-4" controlId="formPrice">
-                {/* <Form.Label className="h3 fw-bolder">Price</Form.Label> */}
                 <Form.Control
                   type="number"
                   name="price"
-                  value={newProduct.price}
+                  value={inputProduct.price}
                   onChange={handleChange}
                   placeholder="Price"
                   className="py-2 px-2 fs-5 rounded-3"
@@ -122,18 +215,17 @@ const AddProduct = () => {
                     color: "#613D2B",
                   }}
                 />
-                {/* {error.price && (
+                {error.price && (
                   <Form.Text className="text-danger">{error.price}</Form.Text>
-                )} */}
+                )}
               </Form.Group>
 
               {/* desc */}
               <Form.Group className="mb-4" controlId="formDescription">
-                {/* <Form.Label className="h3 fw-bolder">Description</Form.Label> */}
                 <Form.Control
                   as="textarea"
                   name="description"
-                  value={newProduct.description}
+                  value={inputProduct.description}
                   onChange={handleChange}
                   placeholder="Products Description"
                   className="py-2 px-2 fs-5 rounded-3"
@@ -145,21 +237,15 @@ const AddProduct = () => {
                     height: "100px",
                   }}
                 />
-                {/* {error.description && (
+                {error.description && (
                   <Form.Text className="text-danger">
                     {error.description}
                   </Form.Text>
-                )} */}
+                )}
               </Form.Group>
 
               {/* Image */}
               <Form.Group className="mb-3">
-                {/* <Form.Label className="h3 fw-bolder">Image</Form.Label> */}
-                {/* {error.images && (
-                  <Form.Text className="text-danger d-block">
-                    {error.images}
-                  </Form.Text>
-                )} */}
                 <Form.Control
                   type="file"
                   name="image"
@@ -186,6 +272,11 @@ const AddProduct = () => {
                 <p className="p-0 m-0 fw-normal">Photo Product</p>
                 <CgAttachment className="fs-4" />
               </div>
+              {error.image && (
+                <Form.Text className="text-danger d-block">
+                  {error.image}
+                </Form.Text>
+              )}
 
               <div className="d-flex justify-content-center mt-3">
                 {handleAddProduct.isLoading ? (
@@ -218,10 +309,10 @@ const AddProduct = () => {
 
           {/* Image */}
           <Col lg={6}>
-            {newProduct.image && (
+            {inputProduct.image && (
               <Image
-                src={URL.createObjectURL(newProduct.image[0])}
-                alt={newProduct.name}
+                src={URL.createObjectURL(inputProduct.image[0])}
+                alt={inputProduct.name}
                 className="w-100 p-5"
               />
             )}
