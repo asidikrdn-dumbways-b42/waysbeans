@@ -4,6 +4,7 @@ import { CgAttachment } from "react-icons/cg";
 import { useMutation } from "react-query";
 import { API } from "../config/api";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -43,6 +44,10 @@ const AddProduct = () => {
       const response = await API.post(`/product`, body);
       if (response.data.status === "success") {
         navigate("/list-product");
+        Swal.fire({
+          title: "Add Product Success",
+          icon: "success",
+        });
       }
     } catch (e) {}
   });
@@ -183,34 +188,30 @@ const AddProduct = () => {
               </div>
 
               <div className="d-flex justify-content-center mt-3">
-                <Button
-                  type="submit"
-                  className="mt-5 px-5 text-white fs-5 fw-bolder hoveredButton"
-                  style={{
-                    backgroundColor: "#613D2B",
-                    border: "none",
-                  }}
-                >
-                  Add Product
-                </Button>
-                {/* {handleAddTrip.isLoading ? (
+                {handleAddProduct.isLoading ? (
                   <Button
-                    variant="warning"
                     type="submit"
-                    className="px-5 text-white fs-5 fw-bolder"
+                    className="mt-5 px-5 text-white fs-5 fw-bolder hoveredButton"
+                    style={{
+                      backgroundColor: "#613D2B",
+                      border: "none",
+                    }}
                     disabled
                   >
-                    Adding Trip...
+                    Adding Product...
                   </Button>
                 ) : (
                   <Button
-                    variant="warning"
                     type="submit"
-                    className="px-5 text-white fs-5 fw-bolder"
+                    className="mt-5 px-5 text-white fs-5 fw-bolder hoveredButton"
+                    style={{
+                      backgroundColor: "#613D2B",
+                      border: "none",
+                    }}
                   >
-                    Add Trip
+                    Add Product
                   </Button>
-                )} */}
+                )}
               </div>
             </Form>
           </Col>
