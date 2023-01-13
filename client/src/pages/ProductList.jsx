@@ -1,8 +1,13 @@
+import { useState } from "react";
 import { Button, Container, Table, Image } from "react-bootstrap";
 import { useQuery, useMutation } from "react-query";
+import UpdateProductModal from "../components/UpdateProductModal";
 import { API } from "../config/api";
 
 const ProductList = () => {
+  const [showUpdateProductModal, setShowUpdateProductModal] = useState(false);
+  const [currentProductData, setCurrentProductData] = useState({});
+
   const {
     data: productData,
     // isisLoading: productDataIsLoading,
@@ -29,6 +34,12 @@ const ProductList = () => {
 
   return (
     <main style={{ marginTop: 150 }}>
+      <UpdateProductModal
+        showUpdateProductModal={showUpdateProductModal}
+        setShowUpdateProductModal={setShowUpdateProductModal}
+        productDataRefetch={productDataRefetch}
+        currentProductData={currentProductData}
+      />
       <Container fluid style={{ padding: "0 150px" }}>
         <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
           List Product
@@ -66,7 +77,9 @@ const ProductList = () => {
             {productData?.map((product, i) => {
               return (
                 <tr key={product.id}>
-                  <td valign="middle">{i + 1}</td>
+                  <td className="text-center" valign="middle">
+                    {i + 1}
+                  </td>
                   <td className="text-center" valign="middle">
                     <Image src={product.image} alt={product.name} />
                   </td>
@@ -74,7 +87,7 @@ const ProductList = () => {
                     <h3>{product.name}</h3>
                   </td>
                   <td className={"text-center"} valign="middle">
-                    <h5>{product.stock}</h5>
+                    <h5>{product.stock} pcs</h5>
                   </td>
                   <td className={"text-center"} valign="middle">
                     <h5>Rp {product.price.toLocaleString()},-</h5>
@@ -94,7 +107,14 @@ const ProductList = () => {
                     >
                       Delete
                     </Button>
-                    <Button variant="success" className="py-1 px-4 mx-2">
+                    <Button
+                      variant="success"
+                      className="py-1 px-4 mx-2"
+                      onClick={() => {
+                        setCurrentProductData(product);
+                        setShowUpdateProductModal(true);
+                      }}
+                    >
                       Update
                     </Button>
                   </td>
