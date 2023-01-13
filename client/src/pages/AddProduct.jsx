@@ -41,9 +41,7 @@ const AddProduct = () => {
       body.append("image", newProduct.image[0]);
 
       const response = await API.post(`/product`, body);
-      console.log(response);
       if (response.data.status === "success") {
-        console.log("berhasil");
         navigate("/list-product");
       }
     } catch (e) {}
