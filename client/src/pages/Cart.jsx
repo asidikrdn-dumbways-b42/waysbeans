@@ -101,12 +101,15 @@ const Cart = () => {
         window.snap.pay(response.data.data.midtrans_id, {
           onSuccess: function (result) {
             /* You may add your own implementation here */
+            orderCartRefetch();
           },
           onPending: function (result) {
             /* You may add your own implementation here */
+            orderCartRefetch();
           },
           onError: function (result) {
             /* You may add your own implementation here */
+            orderCartRefetch();
           },
           onClose: function () {
             /* You may add your own implementation here */
