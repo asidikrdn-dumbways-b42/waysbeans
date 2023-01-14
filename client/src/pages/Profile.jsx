@@ -149,7 +149,10 @@ const Profile = () => {
                     key={i}
                   >
                     <Row>
-                      <Col lg={9}>
+                      <Col
+                        lg={9}
+                        className="d-flex flex-column align-items-start justify-content-center"
+                      >
                         {trx.products?.map((product, i) => {
                           return (
                             <Row key={i}>
