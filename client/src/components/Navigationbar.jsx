@@ -126,7 +126,7 @@ const Navigationbar = () => {
                 />
               ) : (
                 <Image
-                  src="/assets/profil.jpg"
+                  src="/assets/profile-undefined.png"
                   style={{ width: 75, height: 75, objectFit: "cover" }}
                   roundedCircle
                 />

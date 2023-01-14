@@ -61,7 +61,7 @@ const Profile = () => {
                       />
                     ) : (
                       <Image
-                        src="/assets/profil.jpg"
+                        src="/assets/profile-undefined.png"
                         alt="profile pict"
                         style={{ height: "100%", objecetFit: "contain" }}
                         fluid
