@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 	_ "time/tzdata"
 	"waysbeans/dto"
@@ -13,6 +14,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
+	"github.com/midtrans/midtrans-go"
+	"github.com/midtrans/midtrans-go/snap"
 )
 
 type handlerTransaction struct {
@@ -155,9 +158,55 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// 1. Initiate Snap client
+	var s = snap.Client{}
+	s.New(os.Getenv("SERVER_KEY"), midtrans.Sandbox)
+
+	// 2. Initiate Snap request
+	req := &snap.Request{
+		TransactionDetails: midtrans.TransactionDetails{
+			OrderID:  transaction.ID,
+			GrossAmt: int64(transaction.Total),
+		},
+		CreditCard: &snap.CreditCardDetails{
+			Secure: true,
+		},
+		CustomerDetail: &midtrans.CustomerDetails{
+			FName: transaction.User.Name,
+			Phone: transaction.User.Phone,
+			BillAddr: &midtrans.CustomerAddress{
+				FName:    transaction.User.Name,
+				Phone:    transaction.User.Phone,
+				Address:  transaction.User.Address,
+				Postcode: transaction.User.PostCode,
+			},
+			ShipAddr: &midtrans.CustomerAddress{
+				FName:    transaction.User.Name,
+				Phone:    transaction.User.Phone,
+				Address:  transaction.User.Address,
+				Postcode: transaction.User.PostCode,
+			},
+		},
+	}
+
+	// 3. Request create Snap transaction to Midtrans
+	snapResp, _ := s.CreateTransactionToken(req)
+	fmt.Println("Response :", snapResp)
+
+	transaction, err = h.TransactionRepository.UpdateTokenTransaction(snapResp, transaction.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		res := dto.ErrorResult{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
 	w.WriteHeader(http.StatusCreated)
 	res := dto.SuccessResult{
-		Status: "success", Data: transaction,
+		Status: "success", Data: convertTransactionResponse(transaction),
 	}
 	json.NewEncoder(w).Encode(res)
 }
