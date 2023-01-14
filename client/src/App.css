@@ -25,6 +25,12 @@ button#dropdown-profile.dropdown-toggle.btn.btn-primary::after {
   background-color: transparent !important;
 }
 
+.updateprofilemodals {
+  width: 75vw !important;
+  max-width: none !important;
+  background-color: transparent !important;
+}
+
 /* Dekstop */
 @media screen and (min-width: 768px) {
 }

@@ -6,12 +6,37 @@ import {
   Row,
   Card,
   Alert,
+  Spinner,
 } from "react-bootstrap";
 import { QRCodeSVG } from "qrcode.react";
+import { useQuery } from "react-query";
+import { API } from "../config/api";
+import UpdateProfileModals from "../components/UpdateProfileModal";
+import { useState } from "react";
 
 const Profile = () => {
+  const [showUpdateProfileModals, setShowUpdateProfileModals] = useState(false);
+  const {
+    data: profileData,
+    isLoading: profileDataIsLoading,
+    refetch: profileDataRefetch,
+  } = useQuery("profileDataCache", async () => {
+    try {
+      const response = await API.get("/user");
+      if (response.data.status === "success") {
+        return response.data.data;
+      }
+    } catch (err) {}
+  });
+
   return (
     <main style={{ marginTop: 150 }}>
+      <UpdateProfileModals
+        showUpdateProfileModals={showUpdateProfileModals}
+        setShowUpdateProfileModals={setShowUpdateProfileModals}
+        currentProfileData={profileData}
+        profileDataRefetch={profileDataRefetch}
+      />
       <Container>
         <Row>
           {/* Profile */}
@@ -19,64 +44,82 @@ const Profile = () => {
             <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
               My Profile
             </h1>
-            <Container className="mt-5">
-              <Row>
-                <Col lg={4}>
-                  <Image
-                    src="/assets/profil.jpg"
-                    alt="profile pict"
-                    style={{ height: "100%", objecetFit: "contain" }}
-                    fluid
-                  />
-                </Col>
-                <Col lg={8}>
-                  <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
-                    Full Name
-                  </h5>
-                  <p>Ahmad Sidik Rudini</p>
-                  <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
-                    Email
-                  </h5>
-                  <p>sidikrudini16@gmail.com</p>
-                  <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
-                    Phone
-                  </h5>
-                  <p>087711356758</p>
-                </Col>
-              </Row>
-              <Row className="mt-3">
-                <Col lg={4}>
-                  <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
-                    Alamat
-                  </h5>
-                </Col>
-                <Col lg={8}>
-                  <p>Jl. Jabaru 3 No.70, Pasir Kuda, Bogor Barat, Kota Bogor</p>
-                </Col>
-                <Col lg={4}>
-                  <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
-                    Post Code
-                  </h5>
-                </Col>
-                <Col lg={8}>
-                  <p>16119</p>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={12} className="text-center">
-                  <Button
-                    className="px-4 text-white hoveredButton py-2 mt-4"
-                    style={{
-                      backgroundColor: "#613D2B",
-                      border: "2px solid #613D2B",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    Update Profile
-                  </Button>
-                </Col>
-              </Row>
-            </Container>
+            {profileDataIsLoading ? (
+              <Container className="mt-5 pt-5 d-flex flex-row justify-content-center align-items-center">
+                <Spinner animation="border" style={{ color: "#613D2B" }} />
+              </Container>
+            ) : (
+              <Container className="mt-5">
+                <Row>
+                  <Col lg={4}>
+                    {profileData.image ? (
+                      <Image
+                        src={profileData.image}
+                        alt="profile pict"
+                        style={{ height: "100%", objecetFit: "contain" }}
+                        fluid
+                      />
+                    ) : (
+                      <Image
+                        src="/assets/profil.jpg"
+                        alt="profile pict"
+                        style={{ height: "100%", objecetFit: "contain" }}
+                        fluid
+                      />
+                    )}
+                  </Col>
+                  <Col lg={8}>
+                    <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
+                      Full Name
+                    </h5>
+                    <p>{profileData.name ? profileData.name : "-"}</p>
+                    <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
+                      Email
+                    </h5>
+                    <p>{profileData.email ? profileData.email : "-"}</p>
+                    <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
+                      Phone
+                    </h5>
+                    <p>{profileData.phone ? profileData.phone : "-"}</p>
+                  </Col>
+                </Row>
+                <Row className="mt-3">
+                  <Col lg={4}>
+                    <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
+                      Alamat
+                    </h5>
+                  </Col>
+                  <Col lg={8}>
+                    <p>{profileData.address ? profileData.address : "-"}</p>
+                  </Col>
+                  <Col lg={4}>
+                    <h5 style={{ color: "#613D2B" }} className="fw-bold mb-1">
+                      Post Code
+                    </h5>
+                  </Col>
+                  <Col lg={8}>
+                    <p>{profileData.post_code ? profileData.post_code : "-"}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col lg={12} className="text-center">
+                    <Button
+                      className="px-4 text-white hoveredButton py-2 mt-4"
+                      style={{
+                        backgroundColor: "#613D2B",
+                        border: "2px solid #613D2B",
+                        fontWeight: "bold",
+                      }}
+                      onClick={() => {
+                        setShowUpdateProfileModals(true);
+                      }}
+                    >
+                      Update Profile
+                    </Button>
+                  </Col>
+                </Row>
+              </Container>
+            )}
           </Col>
 
           {/* Transaction */}
