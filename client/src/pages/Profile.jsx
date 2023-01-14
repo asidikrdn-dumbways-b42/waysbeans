@@ -28,6 +28,18 @@ const Profile = () => {
       }
     } catch (err) {}
   });
+  const {
+    data: transactionsData,
+    isLoading: transactionsDataIsLoading,
+    refetch: transactionsDataRefetch,
+  } = useQuery("transactionsDataCache", async () => {
+    try {
+      const response = await API.get("/transactions");
+      if (response.data.status === "success") {
+        return response.data.data;
+      }
+    } catch (err) {}
+  });
 
   return (
     <main style={{ marginTop: 150 }}>
@@ -124,157 +136,111 @@ const Profile = () => {
 
           {/* Transaction */}
           <Col>
-            <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
+            <h1 className="display-6 fw-bold mb-5" style={{ color: "#613D2B" }}>
               My Transaction
             </h1>
-            {/* trx 1 */}
-            <Card
-              style={{ border: "none", backgroundColor: "#F6E6DA" }}
-              className="my-2 py-2 px-4 rounded-1"
-            >
-              <Row>
-                <Col lg={3}>
-                  <Image
-                    src="/assets/product.svg"
-                    alt="Product"
-                    className="py-3"
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Col>
-                <Col lg={6} className="px-lg-0">
-                  <Card.Body className="px-0 py-4">
-                    <Card.Title
-                      className="fw-bold mb-2 fs-6"
-                      style={{ color: "#613D2B" }}
+            {transactionsData?.map((trx, i) => {
+              return (
+                <Card
+                  style={{ border: "none", backgroundColor: "#F6E6DA" }}
+                  className="my-2 py-2 px-4 rounded-1"
+                  key={i}
+                >
+                  <Row>
+                    <Col lg={9}>
+                      {trx.products?.map((product, i) => {
+                        return (
+                          <Row key={i}>
+                            <Col lg={3}>
+                              <Image
+                                src={product.image}
+                                alt="Product"
+                                className="py-2"
+                                style={{
+                                  height: "100%",
+                                  width: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            </Col>
+                            <Col lg={9} className="px-lg-0">
+                              <Card.Body className="px-0 py-2">
+                                <Card.Title
+                                  className="fw-bold mb-2 fs-6"
+                                  style={{ color: "#613D2B" }}
+                                >
+                                  {product.name}
+                                </Card.Title>
+                                <Card.Subtitle
+                                  style={{ color: "#613D2B", fontSize: 12 }}
+                                >
+                                  {trx.order_date}
+                                </Card.Subtitle>
+                                <Card.Text
+                                  style={{ color: "#A46161", fontSize: 12 }}
+                                  className="p-0 m-0 mt-3"
+                                >
+                                  Price : Rp {product.price.toLocaleString()},-
+                                </Card.Text>
+                                <Card.Text
+                                  style={{ color: "#A46161", fontSize: 12 }}
+                                  className="p-0 m-0"
+                                >
+                                  Qty : {product.orderQty}
+                                </Card.Text>
+                                <Card.Text
+                                  style={{ color: "#A46161", fontSize: 12 }}
+                                  className="p-0 m-0 mb-3 fw-bold"
+                                >
+                                  Sub Total : Rp{" "}
+                                  {(
+                                    product.orderQty * product.price
+                                  ).toLocaleString()}
+                                  ,-
+                                </Card.Text>
+                              </Card.Body>
+                            </Col>
+                          </Row>
+                        );
+                      })}
+                    </Col>
+                    <Col
+                      lg={3}
+                      className="d-flex flex-column align-items-center justify-content-center p-0"
                     >
-                      GUETAMALA Beans
-                    </Card.Title>
-                    <Card.Subtitle style={{ color: "#613D2B", fontSize: 12 }}>
-                      <b>Saturday,</b> 5 March 2020
-                    </Card.Subtitle>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0 mt-5"
-                    >
-                      Price : Rp 300.900,-
-                    </Card.Text>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0"
-                    >
-                      Qty : 2
-                    </Card.Text>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0 mb-3 fw-bold"
-                    >
-                      Sub Total : Rp 601.800,-
-                    </Card.Text>
-                  </Card.Body>
-                </Col>
-                <Col lg={3} className="p-0">
-                  <Card.Body className="d-flex flex-column align-items-center justify-content-center px-1">
-                    <Image
-                      src="/assets/NavbarIcon.svg"
-                      alt="WaysBeans"
-                      fluid
-                      width={"75%"}
-                    />
-                    <QRCodeSVG
-                      value={"transaction_id"}
-                      bgColor={"#F6E6DA"}
-                      size={70}
-                      className="my-3"
-                    />
-                    <Alert
-                      variant="warning"
-                      className="d-inline-block text-center p-1 w-100 mb-0"
-                      style={{ fontSize: 12 }}
-                    >
-                      Waiting Approve
-                    </Alert>
-                  </Card.Body>
-                </Col>
-              </Row>
-            </Card>
-            {/* trx 2 */}
-            <Card
-              style={{ border: "none", backgroundColor: "#F6E6DA" }}
-              className="my-2 py-2 px-4 rounded-1"
-            >
-              <Row>
-                <Col lg={3}>
-                  <Image
-                    src="/assets/product.svg"
-                    alt="Product"
-                    className="py-3"
-                    style={{
-                      height: "100%",
-                      width: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                </Col>
-                <Col lg={6} className="px-lg-0">
-                  <Card.Body className="px-0 py-4">
-                    <Card.Title
-                      className="fw-bold mb-2 fs-6"
-                      style={{ color: "#613D2B" }}
-                    >
-                      GUETAMALA Beans
-                    </Card.Title>
-                    <Card.Subtitle style={{ color: "#613D2B", fontSize: 12 }}>
-                      <b>Saturday,</b> 5 March 2020
-                    </Card.Subtitle>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0 mt-5"
-                    >
-                      Price : Rp 300.900,-
-                    </Card.Text>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0"
-                    >
-                      Qty : 2
-                    </Card.Text>
-                    <Card.Text
-                      style={{ color: "#A46161", fontSize: 12 }}
-                      className="p-0 m-0 mb-3 fw-bold"
-                    >
-                      Sub Total : Rp 601.800,-
-                    </Card.Text>
-                  </Card.Body>
-                </Col>
-                <Col lg={3} className="p-0">
-                  <Card.Body className="d-flex flex-column align-items-center justify-content-center px-1">
-                    <Image
-                      src="/assets/NavbarIcon.svg"
-                      alt="WaysBeans"
-                      fluid
-                      width={"75%"}
-                    />
-                    <QRCodeSVG
-                      value={"transaction_id"}
-                      bgColor={"#F6E6DA"}
-                      size={70}
-                      className="my-3"
-                    />
-                    <Alert
-                      variant="success"
-                      className="d-inline-block text-center p-1 w-100 mb-0"
-                      style={{ fontSize: 12 }}
-                    >
-                      Success
-                    </Alert>
-                  </Card.Body>
-                </Col>
-              </Row>
-            </Card>
+                      <Card.Body className="d-flex flex-column align-items-center justify-content-center px-1">
+                        <Image
+                          src="/assets/NavbarIcon.svg"
+                          alt="WaysBeans"
+                          fluid
+                          width={"75%"}
+                        />
+                        <QRCodeSVG
+                          value={"transaction_id"}
+                          bgColor={"#F6E6DA"}
+                          size={70}
+                          className="my-3"
+                        />
+                        <Alert
+                          variant="warning"
+                          className="d-inline-block text-center p-1 w-100 mb-0"
+                          style={{ fontSize: 12 }}
+                        >
+                          {trx.status.toUpperCase()}
+                        </Alert>
+                        <Card.Text
+                          style={{ color: "#A46161", fontSize: 14 }}
+                          className="p-0 m-0 mt-2 fw-bold"
+                        >
+                          Total : Rp {trx.total.toLocaleString()}
+                          ,-
+                        </Card.Text>
+                      </Card.Body>
+                    </Col>
+                  </Row>
+                </Card>
+              );
+            })}
           </Col>
         </Row>
       </Container>
