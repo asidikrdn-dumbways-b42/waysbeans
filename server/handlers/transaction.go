@@ -211,6 +211,67 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(res)
 }
 
+func (h *handlerTransaction) Notification(w http.ResponseWriter, r *http.Request) {
+	// 1. Initialize empty map
+	var notificationPayload map[string]interface{}
+
+	// 2. Parse JSON request body and use it to set json to payload
+	err := json.NewDecoder(r.Body).Decode(&notificationPayload)
+	if err != nil {
+		// do something on error when decode
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Status: "error", Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	// 3. Get order-id from payload
+	orderId, exists := notificationPayload["order_id"].(string)
+	if !exists {
+		// do something when key `order_id` not found
+		return
+	}
+
+	// 4. Check transaction to Midtrans with param orderId
+	transaction, err := h.TransactionRepository.GetTransaction(orderId)
+	// jika transaksi di database tidak ditemukan, atau sudah dihapus, maka hentikan fungsi notification (menghindari app crash)
+	if err != nil {
+		fmt.Println("Transaction not found")
+		return
+	}
+
+	transactionStatus := notificationPayload["transaction_status"].(string)
+	fraudStatus := notificationPayload["fraud_status"].(string)
+
+	if transactionStatus != "" {
+		// 5. Do set transaction status based on response from check transaction status
+		if transactionStatus == "capture" {
+			if fraudStatus == "challenge" {
+				// TODO set transaction status on your database to 'challenge'
+				// e.g: 'Payment status challenged. Please take action on your Merchant Administration Portal
+				h.TransactionRepository.UpdateTransaction("pending", transaction.ID)
+			} else if fraudStatus == "accept" {
+				// TODO set transaction status on your database to 'success'
+				h.TransactionRepository.UpdateTransaction("success", transaction.ID)
+			}
+		} else if transactionStatus == "settlement" {
+			// TODO set transaction status on your databaase to 'success'
+			h.TransactionRepository.UpdateTransaction("success", transaction.ID)
+		} else if transactionStatus == "deny" {
+			// TODO you can ignore 'deny', because most of the time it allows payment retries
+			// and later can become success
+			h.TransactionRepository.UpdateTransaction("failed", transaction.ID)
+		} else if transactionStatus == "cancel" || transactionStatus == "expire" {
+			// TODO set transaction status on your databaase to 'failure'
+			h.TransactionRepository.UpdateTransaction("failed", transaction.ID)
+		} else if transactionStatus == "pending" {
+			// TODO set transaction status on your databaase to 'pending' / waiting payment
+			h.TransactionRepository.UpdateTransaction("pending", transaction.ID)
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("ok"))
+}
+
 func convertMultipleTransactionResponse(transactions []models.Transaction) []dto.TransactionResponse {
 	var transactionsResponse []dto.TransactionResponse
 
