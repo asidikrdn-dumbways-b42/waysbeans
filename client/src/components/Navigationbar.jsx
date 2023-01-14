@@ -121,13 +121,13 @@ const Navigationbar = () => {
               {userProfile !== undefined && userProfile.image !== "" ? (
                 <Image
                   src={userProfile.image}
-                  style={{ width: 75 }}
+                  style={{ width: 75, height: 75, objectFit: "cover" }}
                   roundedCircle
                 />
               ) : (
                 <Image
                   src="/assets/profil.jpg"
-                  style={{ width: 75 }}
+                  style={{ width: 75, height: 75, objectFit: "cover" }}
                   roundedCircle
                 />
               )}
