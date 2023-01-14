@@ -17,8 +17,8 @@ const Navigationbar = () => {
 
   const { loginState } = useContext(MyContext);
 
-  const { data: userProfile } = useQuery(
-    "userProfileCache",
+  const { data: profileData } = useQuery(
+    "profileDataCache",
     async () => {
       const response = await API.get("/user");
       return response.data.data;
@@ -98,7 +98,7 @@ const Navigationbar = () => {
           </Nav>
         ) : (
           <Nav className="ms-auto">
-            {userProfile?.role === "user" && (
+            {profileData?.role === "user" && (
               <div className="position-relative d-flex flex-row justify-content-center align-items-center hoveredDropdown">
                 <Image
                   src="/assets/Basket.svg"
@@ -126,9 +126,9 @@ const Navigationbar = () => {
             )}
 
             <DropdownProfile>
-              {userProfile !== undefined && userProfile.image !== "" ? (
+              {profileData !== undefined && profileData.image !== "" ? (
                 <Image
-                  src={userProfile.image}
+                  src={profileData.image}
                   style={{ width: 75, height: 75, objectFit: "cover" }}
                   roundedCircle
                 />
