@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useContext, useState } from "react";
 import { Button, Container, Image, Nav, Navbar } from "react-bootstrap";
 import { useQuery } from "react-query";
@@ -27,11 +28,18 @@ const Navigationbar = () => {
     }
   );
 
-  const { data: orderCart } = useQuery("orderCartCache", async () => {
-    try {
-      const response = await API.get(`/orders`);
-      return response.data.data;
-    } catch (e) {}
+  const { data: orderCart, refetch: orderCartRefetch } = useQuery(
+    "orderCartCache",
+    async () => {
+      try {
+        const response = await API.get(`/orders`);
+        return response.data.data;
+      } catch (e) {}
+    }
+  );
+
+  useEffect(() => {
+    loginState.isLogin && orderCart === undefined && orderCartRefetch();
   });
 
   return (
