@@ -75,6 +75,7 @@ const ProductList = () => {
               {productData?.map((product, i) => {
                 return (
                   <Product
+                    key={i}
                     index={i}
                     product={product}
                     productDataRefetch={productDataRefetch}
