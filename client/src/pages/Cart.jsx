@@ -13,6 +13,7 @@ const Cart = () => {
 
   const navigate = useNavigate();
 
+  // fetch order cart
   const {
     data: orderCart,
     isLoading: orderCartIsLoading,
@@ -36,6 +37,7 @@ const Cart = () => {
     }
   });
 
+  // add counter
   const handleAddQty = useMutation(async (id) => {
     // console.log("tambah");
     try {
@@ -50,6 +52,7 @@ const Cart = () => {
     }
   });
 
+  // less counter
   const handleLessQty = useMutation(async (id) => {
     // console.log("kurang");
     try {
@@ -64,6 +67,7 @@ const Cart = () => {
     }
   });
 
+  // delete order
   const handleDeleteOrder = useMutation(async (id) => {
     try {
       const response = await API.delete(`/order/${id}`);
@@ -75,6 +79,48 @@ const Cart = () => {
     }
   });
 
+  // add transaction
+  const handleAddTransaction = useMutation(async () => {
+    try {
+      let products = [];
+
+      orderCart.forEach((el) => {
+        products.push({
+          id: el.id,
+          product_id: el.product.id,
+          orderQty: el.order_qty,
+        });
+      });
+
+      const body = {
+        total: total,
+        products: products,
+      };
+      const response = await API.post("/transaction", body);
+      if (response.data.status === "success") {
+        window.snap.pay(response.data.data.midtrans_id, {
+          onSuccess: function (result) {
+            /* You may add your own implementation here */
+          },
+          onPending: function (result) {
+            /* You may add your own implementation here */
+          },
+          onError: function (result) {
+            /* You may add your own implementation here */
+          },
+          onClose: function () {
+            /* You may add your own implementation here */
+            Swal.fire({
+              icon: "warning",
+              text: "you closed the popup without finishing the payment",
+            });
+            navigate("/profile");
+          },
+        });
+      }
+    } catch (e) {}
+  });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let total = orderCart?.reduce((sum, order) => {
@@ -83,6 +129,28 @@ const Cart = () => {
 
     setTotal(total);
   });
+
+  // snap midtrans
+  useEffect(() => {
+    //change this to the script source you want to load, for example this is snap.js sandbox env
+    const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
+    //change this according to your client-key
+    const myMidtransClientKey = process.env.REACT_APP_MIDTRANS_CLIENT_KEY;
+
+    let scriptTag = document.createElement("script");
+    scriptTag.src = midtransScriptUrl;
+    // optional if you want to set script attribute
+    // for example snap.js have data-client-key attribute
+    scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+
+    // menambahkan scriptTag ke akhir body
+    document.body.appendChild(scriptTag);
+
+    // menghapus scriptTag saat element akan di unmount
+    return () => {
+      document.body.removeChild(scriptTag);
+    };
+  }, []);
 
   return (
     <main style={{ marginTop: 150 }}>
@@ -292,6 +360,9 @@ const Cart = () => {
                   backgroundColor: "#613D2B",
                   border: "2px solid #613D2B",
                   fontWeight: "bold",
+                }}
+                onClick={() => {
+                  handleAddTransaction.mutate();
                 }}
               >
                 Pay
