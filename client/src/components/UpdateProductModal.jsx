@@ -16,7 +16,7 @@ const UpdateProductModal = ({
     name: currentProductData.name,
     price: currentProductData.price,
     stock: currentProductData.stock,
-    description: currentProductData.price,
+    description: currentProductData.description,
     image: "",
   });
 
@@ -64,7 +64,7 @@ const UpdateProductModal = ({
       name: currentProductData.name,
       price: currentProductData.price,
       stock: currentProductData.stock,
-      description: currentProductData.price,
+      description: currentProductData.description,
       image: "",
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
