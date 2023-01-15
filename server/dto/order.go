@@ -8,6 +8,7 @@ type AddOrderRequest struct {
 
 type UpdateOrderRequest struct {
 	Event string `json:"event"`
+	Qty   int    `json:"qty"`
 }
 
 type OrderResponse struct {

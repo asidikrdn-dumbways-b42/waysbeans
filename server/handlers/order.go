@@ -169,6 +169,10 @@ func (h *handlerOrder) UpdateOrder(w http.ResponseWriter, r *http.Request) {
 		order.OrderQty = order.OrderQty - 1
 	}
 
+	if request.Qty != 0 {
+		order.OrderQty = request.Qty
+	}
+
 	orderUpdated, err := h.OrderRepository.UpdateOrder(order)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

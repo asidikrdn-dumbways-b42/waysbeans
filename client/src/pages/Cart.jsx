@@ -37,6 +37,20 @@ const Cart = () => {
     }
   });
 
+  // qty equalization
+  const handleEqualQty = async (id, qty) => {
+    try {
+      const response = await API.patch(`/order/${id}`, {
+        qty: qty,
+      });
+      if (response.data.status === "success") {
+        orderCartRefetch();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   // add counter
   const handleAddQty = useMutation(async (id) => {
     // console.log("tambah");
@@ -190,6 +204,14 @@ const Cart = () => {
           ) : (
             <Col lg={8}>
               {orderCart?.map((order) => {
+                if (order.order_qty > order.product.stock) {
+                  handleEqualQty(order.id, order.product.stock);
+                }
+
+                if (order.product.stock === 0) {
+                  handleDeleteOrder.mutate(order.id);
+                }
+
                 return (
                   <div key={order.id}>
                     <hr
@@ -246,8 +268,9 @@ const Cart = () => {
                                   }}
                                   className="fs-4"
                                   onClick={() => {
-                                    order.order_qty > 1 &&
-                                      handleLessQty.mutate(order.id);
+                                    order.order_qty > 1
+                                      ? handleLessQty.mutate(order.id)
+                                      : handleDeleteOrder.mutate(order.id);
                                   }}
                                 />
                                 <div
@@ -268,7 +291,12 @@ const Cart = () => {
                                   }}
                                   className="fs-4"
                                   onClick={() => {
-                                    handleAddQty.mutate(order.id);
+                                    order.order_qty < order.product.stock
+                                      ? handleAddQty.mutate(order.id)
+                                      : Swal.fire({
+                                          icon: "error",
+                                          title: "Out of stock",
+                                        });
                                   }}
                                 />
                               </div>

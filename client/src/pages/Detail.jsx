@@ -93,12 +93,21 @@ const Detail = () => {
                       fontWeight: "bold",
                     }}
                     onClick={() => {
-                      loginState.isLogin
-                        ? handleAddCart.mutate()
-                        : Swal.fire({
-                            title: "You must be logged in to continue !",
+                      if (loginState.isLogin) {
+                        if (detailProduct?.stock !== 0) {
+                          handleAddCart.mutate();
+                        } else {
+                          Swal.fire({
                             icon: "error",
+                            title: "Product out of stock",
                           });
+                        }
+                      } else {
+                        Swal.fire({
+                          title: "You must be logged in to continue !",
+                          icon: "error",
+                        });
+                      }
                     }}
                   >
                     Add to Cart
