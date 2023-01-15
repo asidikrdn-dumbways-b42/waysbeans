@@ -27,7 +27,7 @@ const IncomeTransaction = () => {
       if (response.data.status === "success") {
         allTransactionsDataRefetch();
         Swal.fire({
-          icons: "success",
+          icon: "success",
           title: "Transaction Approved",
         });
       }
@@ -37,7 +37,7 @@ const IncomeTransaction = () => {
   const handleRejectTransactionStatus = useMutation(async (id) => {
     try {
       const body = {
-        statu: "rejected",
+        status: "rejected",
       };
       const response = await API.patch(`/transaction/${id}`, body);
       console.log(response);
