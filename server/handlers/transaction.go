@@ -211,6 +211,71 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(res)
 }
 
+func (h *handlerTransaction) UpdateTransactionStatus(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	id := mux.Vars(r)["id"]
+
+	var request dto.UpdateTransactionRequest
+
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		res := dto.ErrorResult{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	fmt.Println("ID : ", id)
+	fmt.Println("Status : ", request.Status)
+
+	// memeriksa transaksi yang ingin diupdate
+	_, err = h.TransactionRepository.GetTransaction(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		res := dto.ErrorResult{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	// mengupdate status transaksi
+	transaction, err := h.TransactionRepository.UpdateTransaction(request.Status, id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		res := dto.ErrorResult{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	// mengambil data transaksi yang sudah diupdate
+	transaction, err = h.TransactionRepository.GetTransaction(transaction.ID)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		res := dto.ErrorResult{
+			Status:  "error",
+			Message: err.Error(),
+		}
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	res := dto.SuccessResult{
+		Status: "success",
+		Data:   convertTransactionResponse(transaction),
+	}
+	json.NewEncoder(w).Encode(res)
+}
+
 func (h *handlerTransaction) Notification(w http.ResponseWriter, r *http.Request) {
 	// 1. Initialize empty map
 	var notificationPayload map[string]interface{}
