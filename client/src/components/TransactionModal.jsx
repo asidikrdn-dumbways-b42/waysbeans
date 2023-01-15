@@ -27,6 +27,8 @@ const TransactionModals = ({
       },
       onClose: function () {
         /* You may add your own implementation here */
+        setShowTransactionModals(false);
+        document.activeElement.blur();
         Swal.fire({
           icon: "warning",
           text: "you closed the popup without finishing the payment",
@@ -65,6 +67,7 @@ const TransactionModals = ({
     // optional if you want to set script attribute
     // for example snap.js have data-client-key attribute
     scriptTag.setAttribute("data-client-key", myMidtransClientKey);
+    scriptTag.setAttribute("id", "midtrans-snap");
 
     // menambahkan scriptTag ke akhir body
     document.body.appendChild(scriptTag);
@@ -74,6 +77,10 @@ const TransactionModals = ({
       document.body.removeChild(scriptTag);
     };
   }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = "auto";
+  });
 
   return (
     <Modal
