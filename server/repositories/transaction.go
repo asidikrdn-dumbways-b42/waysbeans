@@ -58,7 +58,7 @@ func (r *repository) UpdateTransaction(status string, trxId string) (models.Tran
 	}
 
 	// If is different & Status is "reject" decrement available quota on data trip
-	if status != transaction.Status && status == "reject" {
+	if status != transaction.Status && status == "rejected" {
 		for _, ordr := range transaction.Order {
 			var product models.Product
 			r.db.First(&product, ordr.Product.ID)
