@@ -1,16 +1,18 @@
 import { useContext, useState } from "react";
-import { Button, Modal, Form, Spinner } from "react-bootstrap";
+import { Button, Modal, Form, Spinner, InputGroup } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { API, setAuthToken } from "../../config/api";
 import { loginSuccess } from "../../store/actions/loginAction";
 import { MyContext } from "../../store/Store";
 import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
   const [input, setInput] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const { dispatchLogin } = useContext(MyContext);
 
   const handleInputChange = (e) => {
@@ -52,6 +54,11 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
       show={loginForm}
       centered
       onHide={() => {
+        setInput({
+          email: "",
+          password: "",
+        });
+        setShowPassword(false);
         setLoginForm(false);
       }}
       style={{
@@ -83,7 +90,6 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
             className="py-2 px-2 fs-5 rounded-3"
             style={{
               backgroundColor: "#D7CFCA",
-              cursor: "pointer",
               border: "2px solid #613D2B",
               color: "#613D2B",
             }}
@@ -91,20 +97,36 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
         </Form.Group>
 
         <Form.Group className="mb-4" controlId="formPassword">
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Password"
-            onChange={handleInputChange}
-            value={input.password}
-            className="py-2 px-2 fs-5 rounded-3"
-            style={{
-              backgroundColor: "#D7CFCA",
-              cursor: "pointer",
-              border: "2px solid #613D2B",
-              color: "#613D2B",
-            }}
-          />
+          <InputGroup>
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              onChange={handleInputChange}
+              value={input.password}
+              className="py-2 px-2 fs-5 rounded-start"
+              style={{
+                backgroundColor: "#D7CFCA",
+                border: "2px solid #613D2B",
+                color: "#613D2B",
+              }}
+            />
+            <InputGroup.Text
+              style={{
+                backgroundColor: "#D7CFCA",
+                cursor: "pointer",
+                border: "2px solid #613D2B",
+                color: "#613D2B",
+              }}
+              onClick={() => {
+                setShowPassword((prevState) => {
+                  return !prevState;
+                });
+              }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </InputGroup.Text>
+          </InputGroup>
         </Form.Group>
 
         {handleLogin.isLoading ? (

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Button, Modal, Form, Spinner } from "react-bootstrap";
+import { Button, Modal, Form, Spinner, InputGroup } from "react-bootstrap";
 import { useMutation } from "react-query";
 import { API } from "../../config/api";
 import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
   const [input, setInput] = useState({
@@ -15,6 +16,7 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   // fungsi untuk menghandle saat terjadi perubahan pada input form
   const handleInputChange = (e) => {
@@ -141,6 +143,12 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
       centered
       id="register-modal"
       onHide={() => {
+        setInput({
+          name: "",
+          email: "",
+          password: "",
+        });
+        setShowPassword(false);
         setRegisterForm(false);
       }}
       style={{
@@ -205,20 +213,37 @@ const Register = ({ registerForm, setRegisterForm, setLoginForm }) => {
         </Form.Group>
 
         <Form.Group className="mb-4" controlId="formPassword">
-          <Form.Control
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={input.password}
-            onChange={handleInputChange}
-            className="py-2 px-2 fs-5 rounded-3"
-            style={{
-              backgroundColor: "#D7CFCA",
-              cursor: "pointer",
-              border: "2px solid #613D2B",
-              color: "#613D2B",
-            }}
-          />
+          <InputGroup>
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={input.password}
+              onChange={handleInputChange}
+              className="py-2 px-2 fs-5 rounded-start"
+              style={{
+                backgroundColor: "#D7CFCA",
+                border: "2px solid #613D2B",
+                color: "#613D2B",
+              }}
+            />
+            <InputGroup.Text
+              style={{
+                backgroundColor: "#D7CFCA",
+                cursor: "pointer",
+                border: "2px solid #613D2B",
+                color: "#613D2B",
+              }}
+              onClick={() => {
+                setShowPassword((prevState) => {
+                  return !prevState;
+                });
+              }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </InputGroup.Text>
+          </InputGroup>
+
           {error.password && (
             <Form.Text className="text-danger">{error.password}</Form.Text>
           )}
