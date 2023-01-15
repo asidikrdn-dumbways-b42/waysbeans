@@ -124,6 +124,15 @@ const Cart = () => {
     } catch (e) {}
   });
 
+  const { data: profileData } = useQuery("profileDataCache", async () => {
+    try {
+      const response = await API.get("/user");
+      if (response.data.status === "success") {
+        return response.data.data;
+      }
+    } catch (err) {}
+  });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     let total = orderCart?.reduce((sum, order) => {
@@ -365,7 +374,18 @@ const Cart = () => {
                   fontWeight: "bold",
                 }}
                 onClick={() => {
-                  handleAddTransaction.mutate();
+                  if (
+                    profileData.address !== "" &&
+                    profileData.post_code !== ""
+                  ) {
+                    handleAddTransaction.mutate();
+                  } else {
+                    Swal.fire({
+                      icon: "error",
+                      title: "You must complete your profile first !",
+                    });
+                    navigate("/profile");
+                  }
                 }}
               >
                 Pay
