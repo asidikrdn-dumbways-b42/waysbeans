@@ -165,7 +165,7 @@ const Cart = () => {
           Review Your Order
         </h3>
       </Container>
-      <Container className="my-2">
+      <Container className="my-5 my-lg-2">
         <Row>
           {orderCartIsLoading ? (
             <Col

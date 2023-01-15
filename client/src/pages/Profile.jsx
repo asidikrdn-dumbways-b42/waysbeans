@@ -63,7 +63,7 @@ const Profile = () => {
       <Container>
         <Row>
           {/* Profile */}
-          <Col>
+          <Col lg={6} className="py-lg-0 pb-5">
             <h1 className="display-6 fw-bold" style={{ color: "#613D2B" }}>
               My Profile
             </h1>
@@ -74,7 +74,7 @@ const Profile = () => {
             ) : (
               <Container className="mt-5">
                 <Row>
-                  <Col lg={4}>
+                  <Col lg={4} className="py-lg-0 pb-2">
                     {profileData.image ? (
                       <Image
                         src={profileData.image}
@@ -163,7 +163,7 @@ const Profile = () => {
                       backgroundColor: "#F6E6DA",
                       cursor: "pointer",
                     }}
-                    className="my-2 py-2 px-4 rounded-1"
+                    className="my-4 my-lg-2 py-2 px-4 rounded-1"
                     key={i}
                     onClick={() => {
                       setCurrentTransactionData(trx);

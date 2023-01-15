@@ -19,7 +19,8 @@ const Home = () => {
   );
   return (
     <main style={{ marginTop: 150 }}>
-      <Container className="position-relative">
+      {/* header dekstop */}
+      <Container className="position-relative d-none d-lg-block">
         <div
           className="d-flex flex-column justify-content-center align-items-start px-5 py-5 position-relative"
           style={{ backgroundColor: "#DBB699", width: "90%" }}
@@ -50,6 +51,40 @@ const Home = () => {
           style={{ width: "40%", top: "5%", right: 12 }}
         />
       </Container>
+
+      {/* header mobile */}
+      <Container className="position-relative d-block d-lg-none">
+        <div
+          className="d-flex flex-column justify-content-center align-items-start px-5 py-5 position-relative"
+          style={{ backgroundColor: "#DBB699", width: "100%" }}
+        >
+          <Image
+            src="/assets/HeaderImage.svg"
+            alt="header"
+            // className="position-absolute"
+            fluid
+          />
+          <Image
+            className="mt-5"
+            src="/assets/HeaderIcon.svg"
+            alt="WaysBeans"
+            width={"55%"}
+          />
+          <div className="h3">BEST QUALITY COFFEE BEANS</div>
+          <p className="mt-3 mb-5 fs-5">
+            Quality freshly roasted coffee made just for you.
+            <br />
+            Pour, brew and enjoy
+          </p>
+          <Image
+            src="/assets/Waves.svg"
+            alt="waves"
+            className="position-absolute"
+            style={{ width: "40%", bottom: "5%", right: "8%" }}
+          />
+        </div>
+      </Container>
+
       <Container className="my-5">
         <Row>
           {productDataIsLoading ? (
@@ -67,7 +102,7 @@ const Home = () => {
           ) : (
             productData?.map((el) => {
               return (
-                <Col lg={3} xs={6} key={el.id}>
+                <Col lg={3} xs={6} key={el.id} className="py-2">
                   <Card
                     style={{
                       backgroundColor: "#F6E6DA",
