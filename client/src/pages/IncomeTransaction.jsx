@@ -158,7 +158,7 @@ const IncomeTransaction = () => {
                       Payment Failed
                     </td>
                   )}
-                  {trx.status === "reject" && (
+                  {trx.status === "rejected" && (
                     <td
                       className="text-center"
                       style={{ color: "red" }}
