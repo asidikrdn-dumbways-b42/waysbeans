@@ -208,7 +208,10 @@ const Cart = () => {
                   handleEqualQty(order.id, order.product.stock);
                 }
 
-                if (order.product.stock === 0) {
+                if (
+                  order.product.stock === 0 ||
+                  order.product.status === "inactive"
+                ) {
                   handleDeleteOrder.mutate(order.id);
                 }
 
