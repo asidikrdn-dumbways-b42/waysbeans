@@ -41,3 +41,28 @@ button#dropdown-profile.dropdown-toggle.btn.btn-primary::after {
 @media screen and (min-width: 768px) {
 }
 /* End of Dekstop */
+
+/* Dekstop */
+@media screen and (max-width: 768px) {
+  .updateproductmodals {
+    width: 80vw !important;
+    max-width: none !important;
+    background-color: transparent !important;
+    margin: 0 auto;
+  }
+
+  .updateprofilemodals {
+    width: 90vw !important;
+    max-width: none !important;
+    background-color: transparent !important;
+    margin: 0 auto;
+  }
+
+  .transactionmodals {
+    width: 80vw !important;
+    max-width: none !important;
+    background-color: transparent !important;
+    margin: 0 auto;
+  }
+}
+/* End of Dekstop */

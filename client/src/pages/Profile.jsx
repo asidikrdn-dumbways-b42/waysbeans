@@ -11,7 +11,7 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { useQuery } from "react-query";
 import { API } from "../config/api";
-import UpdateProfileModals from "../components/TransactionModal";
+import UpdateProfileModals from "../components/UpdateProfileModal";
 import { useState } from "react";
 import TransactionModals from "../components/TransactionModal";
 
@@ -134,6 +134,7 @@ const Profile = () => {
                         fontWeight: "bold",
                       }}
                       onClick={() => {
+                        console.log("Click");
                         setShowUpdateProfileModals(true);
                       }}
                     >

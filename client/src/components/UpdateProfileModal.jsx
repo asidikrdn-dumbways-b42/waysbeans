@@ -95,7 +95,7 @@ const UpdateProfileModals = ({
     >
       <Row className="p-3">
         {/* Form */}
-        <Col lg={7} className="pt-4 ps-5">
+        <Col lg={7} className="pt-4 ps-lg-5">
           <h1
             className="display-6 fw-bold my-3 mb-5"
             style={{ color: "#613D2B" }}
@@ -193,7 +193,7 @@ const UpdateProfileModals = ({
               style={{
                 backgroundColor: "#D7CFCA",
                 cursor: "pointer",
-                width: "30%",
+                width: "50%",
                 border: "2px solid #613D2B",
                 color: "#613D2B",
               }}
@@ -205,7 +205,7 @@ const UpdateProfileModals = ({
               <CgAttachment className="fs-4" />
             </div>
 
-            <div className="d-flex justify-content-center mt-3">
+            <div className="d-lg-flex justify-content-center mt-3 d-none">
               {handleUpdateProfile.isLoading ? (
                 <Button
                   type="submit"
@@ -256,6 +256,32 @@ const UpdateProfileModals = ({
               No Profile Image
             </h1>
           )}
+          <div className="d-flex justify-content-center d-lg-none">
+            {handleUpdateProfile.isLoading ? (
+              <Button
+                type="submit"
+                className="px-5 text-white fs-5 fw-bolder hoveredButton"
+                style={{
+                  backgroundColor: "#613D2B",
+                  border: "none",
+                }}
+                disabled
+              >
+                Updating Profile...
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="px-5 text-white fs-5 fw-bolder hoveredButton"
+                style={{
+                  backgroundColor: "#613D2B",
+                  border: "none",
+                }}
+              >
+                Update Profile
+              </Button>
+            )}
+          </div>
         </Col>
       </Row>
     </Modal>
