@@ -12,7 +12,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useQuery } from "react-query";
 import { API } from "../config/api";
 import UpdateProfileModals from "../components/UpdateProfileModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TransactionModals from "../components/TransactionModal";
 
 const Profile = () => {
@@ -46,6 +46,10 @@ const Profile = () => {
     } catch (err) {}
   });
 
+  useEffect(() => {
+    transactionsDataRefetch();
+  });
+
   return (
     <main style={{ marginTop: 150 }}>
       <UpdateProfileModals
@@ -58,7 +62,7 @@ const Profile = () => {
         showTransactionModals={showTransactionModals}
         setShowTransactionModals={setShowTransactionModals}
         currentTransactionData={currentTransactionData}
-        transactionDataRefetch={transactionsDataRefetch}
+        transactionsDataRefetch={transactionsDataRefetch}
       />
       <Container>
         <Row>

@@ -9,31 +9,31 @@ const TransactionModals = ({
   showTransactionModals,
   setShowTransactionModals,
   currentTransactionData,
-  transactionDataRefetch,
+  transactionsDataRefetch,
 }) => {
   const handlePayTransaction = useMutation(() => {
     window.snap.pay(currentTransactionData.midtrans_id, {
       onSuccess: function (result) {
         /* You may add your own implementation here */
-        transactionDataRefetch();
+        transactionsDataRefetch();
       },
       onPending: function (result) {
         /* You may add your own implementation here */
-        transactionDataRefetch();
+        transactionsDataRefetch();
       },
       onError: function (result) {
         /* You may add your own implementation here */
-        transactionDataRefetch();
+        transactionsDataRefetch();
       },
       onClose: function () {
         /* You may add your own implementation here */
         setShowTransactionModals(false);
         document.activeElement.blur();
+        transactionsDataRefetch();
         Swal.fire({
           icon: "warning",
           text: "you closed the popup without finishing the payment",
         });
-        transactionDataRefetch();
       },
     });
   });
@@ -46,7 +46,7 @@ const TransactionModals = ({
       const response = await API.patch(`/transaction/${id}`, body);
       console.log(response);
       if (response.data.status === "success") {
-        transactionDataRefetch();
+        transactionsDataRefetch();
         Swal.fire({
           icon: "success",
           title: "Package Received",
