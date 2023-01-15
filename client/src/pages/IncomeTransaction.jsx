@@ -1,6 +1,73 @@
-import { Container, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
+import { useMutation, useQuery } from "react-query";
+import Swal from "sweetalert2";
+import { API } from "../config/api";
 
 const IncomeTransaction = () => {
+  const {
+    data: allTransactionsData,
+    // isLoading: allTransactionsDataIsLoading,
+    refetch: allTransactionsDataRefetch,
+  } = useQuery("allTransactionsDataCache", async () => {
+    try {
+      const response = await API.get("/transactions-admin");
+      if (response.data.status === "success") {
+        return response.data.data;
+      }
+    } catch (err) {}
+  });
+
+  const handleApproveTransactionStatus = useMutation(async (id) => {
+    try {
+      const body = {
+        status: "approved",
+      };
+      const response = await API.patch(`/transaction/${id}`, body);
+      console.log(response);
+      if (response.data.status === "success") {
+        allTransactionsDataRefetch();
+        Swal.fire({
+          icons: "success",
+          title: "Transaction Approved",
+        });
+      }
+    } catch (err) {}
+  });
+
+  const handleRejectTransactionStatus = useMutation(async (id) => {
+    try {
+      const body = {
+        statu: "rejected",
+      };
+      const response = await API.patch(`/transaction/${id}`, body);
+      console.log(response);
+      if (response.data.status === "success") {
+        allTransactionsDataRefetch();
+        Swal.fire({
+          icon: "success",
+          title: "Transaction Rejected",
+        });
+      }
+    } catch (err) {}
+  });
+
+  const handleSendPackage = useMutation(async (id) => {
+    try {
+      const body = {
+        status: "sent",
+      };
+      const response = await API.patch(`/transaction/${id}`, body);
+      console.log(response);
+      if (response.data.status === "success") {
+        allTransactionsDataRefetch();
+        Swal.fire({
+          icon: "success",
+          title: "Package Sent",
+        });
+      }
+    } catch (err) {}
+  });
+
   return (
     <main style={{ marginTop: 150 }}>
       <h1
@@ -18,44 +85,169 @@ const IncomeTransaction = () => {
           <thead>
             <tr style={{ backgroundColor: "#E5E5E5" }}>
               <th className="py-3 text-start">No</th>
-              <th className="py-3 text-center">Name</th>
-              <th className="py-3 text-center">Address</th>
+              <th className="py-3 text-center" width="20%">
+                Name
+              </th>
+              <th className="py-3 text-center" width="25%">
+                Address
+              </th>
               <th className="py-3 text-center">Post Code</th>
               <th className="py-3 text-center">Products Order</th>
               <th className="py-3 text-center">Status</th>
+              <th className="py-3 text-center" width="20%">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td className="text-center">Ahmad</td>
-              <td className="text-center">Pasir Kuda, Kota Bogor</td>
-              <td className="text-center">16119</td>
-              <td className="text-center">RWANDA Beans</td>
-              <td className="text-center" style={{ color: "orange" }}>
-                Waiting Approve
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td className="text-center">Sidik</td>
-              <td className="text-center">Pasir Kuda, Kota Bogor</td>
-              <td className="text-center">16119</td>
-              <td className="text-center">RWANDA Beans</td>
-              <td className="text-center" style={{ color: "green" }}>
-                Success
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td className="text-center">Rudini</td>
-              <td className="text-center">Pasir Kuda, Kota Bogor</td>
-              <td className="text-center">16119</td>
-              <td className="text-center">RWANDA Beans</td>
-              <td className="text-center" style={{ color: "red" }}>
-                Cancel
-              </td>
-            </tr>
+            {allTransactionsData?.map((trx, i) => {
+              return (
+                <tr key={i}>
+                  <td valign="middle">{i + 1}</td>
+                  <td className="text-center" valign="middle">
+                    {trx.user.name}
+                  </td>
+                  <td className="text-center" valign="middle">
+                    {trx.user.address}
+                  </td>
+                  <td className="text-center" valign="middle">
+                    {trx.user.post_code}
+                  </td>
+                  <td className="text-center" valign="middle">
+                    {trx.products.map((product, i) => {
+                      if (i + 1 !== trx.products.length) {
+                        return (
+                          <div className="d-inline" key={i}>
+                            {product.name},{" "}
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div className="d-inline" key={i}>
+                            {product.name}
+                          </div>
+                        );
+                      }
+                    })}
+                  </td>
+
+                  {trx.status === "new" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "orange" }}
+                      valign="middle"
+                    >
+                      Waiting Payment
+                    </td>
+                  )}
+                  {trx.status === "pending" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "orange" }}
+                      valign="middle"
+                    >
+                      Waiting Payment
+                    </td>
+                  )}
+                  {trx.status === "failed" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "red" }}
+                      valign="middle"
+                    >
+                      Payment Failed
+                    </td>
+                  )}
+                  {trx.status === "reject" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "red" }}
+                      valign="middle"
+                    >
+                      Transaction Rejected
+                    </td>
+                  )}
+                  {trx.status === "success" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "green" }}
+                      valign="middle"
+                    >
+                      Payment Success, Waiting Approve
+                    </td>
+                  )}
+                  {trx.status === "approved" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "green" }}
+                      valign="middle"
+                    >
+                      On Process
+                    </td>
+                  )}
+                  {trx.status === "sent" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "green" }}
+                      valign="middle"
+                    >
+                      On The Way
+                    </td>
+                  )}
+                  {trx.status === "done" && (
+                    <td
+                      className="text-center"
+                      style={{ color: "green" }}
+                      valign="middle"
+                    >
+                      Package Delivered
+                    </td>
+                  )}
+
+                  <td className="text-center" valign="middle">
+                    {trx.status === "success" && (
+                      <>
+                        <Button
+                          variant="success"
+                          className="py-1 px-4 mx-2"
+                          onClick={() => {
+                            handleApproveTransactionStatus.mutate(
+                              trx.id,
+                              "approved"
+                            );
+                          }}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          variant="danger"
+                          className="py-1 px-4 mx-2"
+                          onClick={() => {
+                            handleRejectTransactionStatus.mutate(
+                              trx.id,
+                              "reject"
+                            );
+                          }}
+                        >
+                          Reject
+                        </Button>
+                      </>
+                    )}
+                    {trx.status === "approved" && (
+                      <Button
+                        variant="success"
+                        className="py-1 px-4 mx-2"
+                        onClick={() => {
+                          handleSendPackage.mutate(trx.id);
+                        }}
+                      >
+                        Send
+                      </Button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </Container>
