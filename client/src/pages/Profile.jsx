@@ -277,7 +277,7 @@ const Profile = () => {
                               Payment failed
                             </Alert>
                           )}
-                          {trx.status === "reject" && (
+                          {trx.status === "rejected" && (
                             <Alert
                               variant="danger"
                               className="d-inline-block text-center p-1 w-100 mb-0"
