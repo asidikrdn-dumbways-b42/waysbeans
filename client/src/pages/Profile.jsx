@@ -11,11 +11,15 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { useQuery } from "react-query";
 import { API } from "../config/api";
-import UpdateProfileModals from "../components/UpdateProfileModal";
+import UpdateProfileModals from "../components/TransactionModal";
 import { useState } from "react";
+import TransactionModals from "../components/TransactionModal";
 
 const Profile = () => {
   const [showUpdateProfileModals, setShowUpdateProfileModals] = useState(false);
+  const [showTransactionModals, setShowTransactionModals] = useState(false);
+  const [currentTransactionData, setCurrentTransactionData] = useState({});
+
   const {
     data: profileData,
     isLoading: profileDataIsLoading,
@@ -28,15 +32,19 @@ const Profile = () => {
       }
     } catch (err) {}
   });
-  const { data: transactionsData, isLoading: transactionsDataIsLoading } =
-    useQuery("transactionsDataCache", async () => {
-      try {
-        const response = await API.get("/transactions");
-        if (response.data.status === "success") {
-          return response.data.data;
-        }
-      } catch (err) {}
-    });
+
+  const {
+    data: transactionsData,
+    isLoading: transactionsDataIsLoading,
+    refetch: transactionsDataRefetch,
+  } = useQuery("transactionsDataCache", async () => {
+    try {
+      const response = await API.get("/transactions");
+      if (response.data.status === "success") {
+        return response.data.data;
+      }
+    } catch (err) {}
+  });
 
   return (
     <main style={{ marginTop: 150 }}>
@@ -45,6 +53,12 @@ const Profile = () => {
         setShowUpdateProfileModals={setShowUpdateProfileModals}
         currentProfileData={profileData}
         profileDataRefetch={profileDataRefetch}
+      />
+      <TransactionModals
+        showTransactionModals={showTransactionModals}
+        setShowTransactionModals={setShowTransactionModals}
+        currentTransactionData={currentTransactionData}
+        transactionDataRefetch={transactionsDataRefetch}
       />
       <Container>
         <Row>
@@ -144,9 +158,17 @@ const Profile = () => {
               transactionsData?.map((trx, i) => {
                 return (
                   <Card
-                    style={{ border: "none", backgroundColor: "#F6E6DA" }}
+                    style={{
+                      border: "none",
+                      backgroundColor: "#F6E6DA",
+                      cursor: "pointer",
+                    }}
                     className="my-2 py-2 px-4 rounded-1"
                     key={i}
+                    onClick={() => {
+                      setCurrentTransactionData(trx);
+                      setShowTransactionModals(true);
+                    }}
                   >
                     <Row>
                       <Col
@@ -227,13 +249,79 @@ const Profile = () => {
                             size={70}
                             className="my-3"
                           />
-                          <Alert
-                            variant="warning"
-                            className="d-inline-block text-center p-1 w-100 mb-0"
-                            style={{ fontSize: 12 }}
-                          >
-                            {trx.status.toUpperCase()}
-                          </Alert>
+                          {trx.status === "new" && (
+                            <Alert
+                              variant="danger"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Waiting Payment
+                            </Alert>
+                          )}
+                          {trx.status === "pending" && (
+                            <Alert
+                              variant="danger"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Waiting Payment
+                            </Alert>
+                          )}
+                          {trx.status === "failed" && (
+                            <Alert
+                              variant="danger"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Payment failed
+                            </Alert>
+                          )}
+                          {trx.status === "reject" && (
+                            <Alert
+                              variant="danger"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Transaction rejected by Admin, please contact
+                              Admin for a refund
+                            </Alert>
+                          )}
+                          {trx.status === "success" && (
+                            <Alert
+                              variant="success"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Payment success, waiting approve from admin
+                            </Alert>
+                          )}
+                          {trx.status === "approved" && (
+                            <Alert
+                              variant="success"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              On Process
+                            </Alert>
+                          )}
+                          {trx.status === "sent" && (
+                            <Alert
+                              variant="success"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              On The Way
+                            </Alert>
+                          )}
+                          {trx.status === "done" && (
+                            <Alert
+                              variant="success"
+                              className="d-inline-block text-center p-1 w-100 mb-0"
+                              style={{ fontSize: 12 }}
+                            >
+                              Package Received
+                            </Alert>
+                          )}
                           <Card.Text
                             style={{ color: "#A46161", fontSize: 14 }}
                             className="p-0 m-0 mt-2 fw-bold"
