@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"text/template"
 	"time"
 	"waysbeans/dto"
 	"waysbeans/models"
@@ -297,225 +299,29 @@ func SendVerification(token string, user dto.RegisterRequest, r *http.Request) {
 	var CONFIG_AUTH_EMAIL = os.Getenv("CONFIG_AUTH_EMAIL")
 	var CONFIG_AUTH_PASSWORD = os.Getenv("CONFIG_AUTH_PASSWORD")
 
-	// link to verify
-	// link := fmt.Sprintf("http://%s/api/v1/verification/%s", r.Host, token)
-	var link string
-	if r.TLS == nil {
-		// the scheme was HTTP
-		link = fmt.Sprintf("http://%s/api/v1/verification/%s", r.Host, token)
-	} else {
-		// the scheme was HTTPS
-		link = fmt.Sprintf("https://%s/api/v1/verification/%s", r.Host, token)
+	data := map[string]string{
+		"Name": user.Name,
+		"URL":  fmt.Sprintf("http://%s/api/v1/verification/%s", r.Host, token),
 	}
+
+	// mengambil file template
+	t, err := template.ParseFiles("view/verification_email.html")
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	bodyMail := new(bytes.Buffer)
+
+	// mengeksekusi template, dan memparse "data" ke template
+	t.Execute(bodyMail, data)
 
 	// create new message
 	verificationEmail := gomail.NewMessage()
 	verificationEmail.SetHeader("From", CONFIG_SENDER_NAME)
 	verificationEmail.SetHeader("To", user.Email)
 	verificationEmail.SetHeader("Subject", "Email Verification")
-	verificationEmail.SetBody("text/html", fmt.Sprintf(`<!DOCTYPE html>
-    <html lang="en">
-      <head>
-      <meta charset="UTF-8" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
-      </head>
-      <body>
-      <table
-				style="width: 100%% !important"
-				width="100%%"
-				cellspacing="0"
-				cellpadding="0"
-				border="0"
-			>
-				<tbody>
-					<tr>
-						<td align="center">
-							<table
-								style="border: 1px solid #eaeaea; border-radius: 5px; margin: 40px 0"
-								width="600"
-								cellspacing="0"
-								cellpadding="40"
-								border="0"
-							>
-								<tbody>
-									<tr>
-										<td align="center" style="background-color: gainsboro">
-											<div
-												style="
-													font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-														'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-														'Droid Sans', 'Helvetica Neue', sans-serif;
-													text-align: left;
-													width: 465px;
-												"
-											>
-												<table
-													style="width: 100%% !important"
-													width="100%%"
-													cellspacing="0"
-													cellpadding="0"
-													border="0"
-												>
-													<tbody>
-														<tr>
-															<td align="center">
-																<div>
-																	<img
-																		src="https://dewetour-test.netlify.app/assets/NavbarIcon.svg"
-																		alt="WaysBeans"
-																		class="CToWUd"
-																		data-bit="iit"
-																	/>
-																</div>
-																<h1
-																	style="
-																		color: #000;
-																		font-family: -apple-system, BlinkMacSystemFont,
-																			'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-																			'Cantarell', 'Fira Sans', 'Droid Sans',
-																			'Helvetica Neue', sans-serif;
-																		font-size: 24px;
-																		font-weight: normal;
-																		margin: 30px 0;
-																		padding: 0;
-																	"
-																>
-																	<span class="il">Verify</span> your email to
-																	Register to <b>WaysBeans</b>
-																</h1>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-												<p
-													style="
-														color: #000;
-														font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-															'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-															'Droid Sans', 'Helvetica Neue', sans-serif;
-														font-size: 14px;
-														line-height: 24px;
-													"
-												>
-													Hello <b>%s</b>,
-												</p>
-												<br />
-												<p
-													style="
-														color: #000;
-														font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-															'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-															'Droid Sans', 'Helvetica Neue', sans-serif;
-														font-size: 14px;
-														line-height: 24px;
-													"
-												>
-													To complete the Register process, please click the button
-													below:
-												</p>
-												<br />
-												<table
-													style="width: 100%% !important"
-													width="100%%"
-													cellspacing="0"
-													cellpadding="0"
-													border="0"
-												>
-													<tbody>
-														<tr>
-															<td align="center">
-																<div>
-																	<a
-																		href="%s"
-																		style="
-																			background-color: #613D2B;
-																			border-radius: 5px;
-																			color: whitesmoke;
-																			display: inline-block;
-																			font-family: -apple-system, BlinkMacSystemFont,
-																				'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-																				'Cantarell', 'Fira Sans', 'Droid Sans',
-																				'Helvetica Neue', sans-serif;
-																			font-size: 16px;
-																			font-weight: 1000;
-																			line-height: 50px;
-																			text-align: center;
-																			text-decoration: none;
-																			width: 200px;
-																		"
-																		target="_blank"
-																		><span class="il">VERIFY</span></a
-																	>
-																</div>
-															</td>
-														</tr>
-													</tbody>
-												</table>
-												<br />
-												<p
-													style="
-														color: #000;
-														font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-															'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-															'Droid Sans', 'Helvetica Neue', sans-serif;
-														font-size: 14px;
-														line-height: 24px;
-													"
-												>
-													Or copy and paste this URL into a new tab of your browser:
-												</p>
-												<p
-													style="
-														color: #000;
-														font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-															'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-															'Droid Sans', 'Helvetica Neue', sans-serif;
-														font-size: 14px;
-														line-height: 24px;
-													"
-												>
-													<a
-														href="%s"
-														style="color: #067df7; text-decoration: none"
-														target="_blank"
-														>%s</a
-													>
-												</p>
-												<br />
-												<hr
-													style="
-														border: none;
-														border-top: 1px solid #eaeaea;
-														margin: 26px 0;
-														width: 100%%;
-													"
-												/>
-												<p
-													style="
-														color: #666666;
-														font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
-															'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
-															'Droid Sans', 'Helvetica Neue', sans-serif;
-														font-size: 12px;
-														line-height: 24px;
-													"
-												>
-													If you didn't attempt to register but received this email,
-													please ignore this email.
-												</p>
-											</div>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-      </body>
-    </html>`, user.Name, link, link, link))
+	verificationEmail.SetBody("text/html", bodyMail.String())
 
 	verificationDialer := gomail.NewDialer(
 		CONFIG_SMTP_HOST,
@@ -524,7 +330,7 @@ func SendVerification(token string, user dto.RegisterRequest, r *http.Request) {
 		CONFIG_AUTH_PASSWORD,
 	)
 
-	err := verificationDialer.DialAndSend(verificationEmail)
+	err = verificationDialer.DialAndSend(verificationEmail)
 	if err != nil {
 		log.Fatal(err.Error())
 	}

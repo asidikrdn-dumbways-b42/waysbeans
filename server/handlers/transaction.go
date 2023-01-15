@@ -1,10 +1,14 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"text/template"
 	"time"
 	_ "time/tzdata"
 	"waysbeans/dto"
@@ -14,8 +18,10 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
+	"github.com/leekchan/accounting"
 	"github.com/midtrans/midtrans-go"
 	"github.com/midtrans/midtrans-go/snap"
+	"gopkg.in/gomail.v2"
 )
 
 type handlerTransaction struct {
@@ -268,6 +274,14 @@ func (h *handlerTransaction) UpdateTransactionStatus(w http.ResponseWriter, r *h
 		return
 	}
 
+	if request.Status == "rejected" {
+		SendTransactionMail("Rejected", transaction)
+	} else if request.Status == "sent" {
+		SendTransactionMail("Success, Product On Delivery", transaction)
+	} else if request.Status == "done" {
+		SendTransactionMail("Success, Product Received", transaction)
+	}
+
 	w.WriteHeader(http.StatusOK)
 	res := dto.SuccessResult{
 		Status: "success",
@@ -317,10 +331,12 @@ func (h *handlerTransaction) Notification(w http.ResponseWriter, r *http.Request
 			} else if fraudStatus == "accept" {
 				// TODO set transaction status on your database to 'success'
 				h.TransactionRepository.UpdateTransaction("success", transaction.ID)
+				SendTransactionMail("Success", transaction)
 			}
 		} else if transactionStatus == "settlement" {
 			// TODO set transaction status on your databaase to 'success'
 			h.TransactionRepository.UpdateTransaction("success", transaction.ID)
+			SendTransactionMail("success", transaction)
 		} else if transactionStatus == "deny" {
 			// TODO you can ignore 'deny', because most of the time it allows payment retries
 			// and later can become success
@@ -328,6 +344,7 @@ func (h *handlerTransaction) Notification(w http.ResponseWriter, r *http.Request
 		} else if transactionStatus == "cancel" || transactionStatus == "expire" {
 			// TODO set transaction status on your databaase to 'failure'
 			h.TransactionRepository.UpdateTransaction("failed", transaction.ID)
+			SendTransactionMail("Failed", transaction)
 		} else if transactionStatus == "pending" {
 			// TODO set transaction status on your databaase to 'pending' / waiting payment
 			h.TransactionRepository.UpdateTransaction("pending", transaction.ID)
@@ -389,6 +406,71 @@ func convertTransactionResponse(transaction models.Transaction) dto.TransactionR
 	}
 
 	return transactionResponse
+}
+
+// fungsi untuk kirim email transaksi
+func SendTransactionMail(status string, transaction models.Transaction) {
+
+	var CONFIG_SMTP_HOST = os.Getenv("CONFIG_SMTP_HOST")
+	var CONFIG_SMTP_PORT, _ = strconv.Atoi(os.Getenv("CONFIG_SMTP_PORT"))
+	var CONFIG_SENDER_NAME = os.Getenv("CONFIG_SENDER_NAME")
+	var CONFIG_AUTH_EMAIL = os.Getenv("CONFIG_AUTH_EMAIL")
+	var CONFIG_AUTH_PASSWORD = os.Getenv("CONFIG_AUTH_PASSWORD")
+
+	ac := accounting.Accounting{Symbol: "Rp", Precision: 2}
+
+	var products []map[string]interface{}
+
+	for _, order := range transaction.Order {
+		products = append(products, map[string]interface{}{
+			"ProductName": order.Product.Name,
+			"Price":       order.Product.Price,
+			"Qty":         order.OrderQty,
+			"SubTotal":    ac.FormatMoney(order.OrderQty * order.Product.Price),
+		})
+	}
+
+	data := map[string]interface{}{
+		"TransactionID":     transaction.ID,
+		"TransactionStatus": status,
+		"UserName":          transaction.User.Name,
+		"OrderDate":         timeIn("Asia/Jakarta").Format("Monday, 2 January 2006"),
+		"Total":             ac.FormatMoney(transaction.Total),
+		"Products":          products,
+	}
+
+	// mengambil file template
+	t, err := template.ParseFiles("view/notification_email.html")
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	bodyMail := new(bytes.Buffer)
+
+	// mengeksekusi template, dan memparse "data" ke template
+	t.Execute(bodyMail, data)
+
+	// create new message
+	trxMail := gomail.NewMessage()
+	trxMail.SetHeader("From", CONFIG_SENDER_NAME)
+	trxMail.SetHeader("To", transaction.User.Email)
+	trxMail.SetHeader("Subject", "WAYSBEANS ORDER NOTIFICATION")
+	trxMail.SetBody("text/html", bodyMail.String())
+
+	trxDialer := gomail.NewDialer(
+		CONFIG_SMTP_HOST,
+		CONFIG_SMTP_PORT,
+		CONFIG_AUTH_EMAIL,
+		CONFIG_AUTH_PASSWORD,
+	)
+
+	err = trxDialer.DialAndSend(trxMail)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	log.Println("Pesan terkirim!")
 }
 
 // fungsi untuk mendapatkan waktu sesuai zona indonesia
