@@ -3,6 +3,7 @@ import { Alert, Button, Card, Col, Image, Modal, Row } from "react-bootstrap";
 import { useMutation } from "react-query";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
+import { API } from "../config/api";
 
 const TransactionModals = ({
   showTransactionModals,
@@ -33,6 +34,23 @@ const TransactionModals = ({
         transactionDataRefetch();
       },
     });
+  });
+
+  const handleReceivePackage = useMutation(async (id) => {
+    try {
+      const body = {
+        status: "done",
+      };
+      const response = await API.patch(`/transaction/${id}`, body);
+      console.log(response);
+      if (response.data.status === "success") {
+        transactionDataRefetch();
+        Swal.fire({
+          icon: "success",
+          title: "Package Received",
+        });
+      }
+    } catch (err) {}
   });
 
   // snap midtrans
@@ -249,6 +267,7 @@ const TransactionModals = ({
                 }}
                 onClick={() => {
                   handlePayTransaction.mutate();
+                  setShowTransactionModals(false);
                 }}
               >
                 PAY
@@ -256,7 +275,7 @@ const TransactionModals = ({
             )}
             {currentTransactionData?.status === "pending" && (
               <Button
-                className="w-50 text-white hoveredButton py-2"
+                className="w-100 text-white hoveredButton py-2"
                 style={{
                   backgroundColor: "#613D2B",
                   border: "2px solid #613D2B",
@@ -264,6 +283,7 @@ const TransactionModals = ({
                 }}
                 onClick={() => {
                   handlePayTransaction.mutate();
+                  setShowTransactionModals(false);
                 }}
               >
                 CONTINUE PENDING PAYMENT
@@ -271,14 +291,15 @@ const TransactionModals = ({
             )}
             {currentTransactionData?.status === "sent" && (
               <Button
-                className="w-50 text-white hoveredButton py-2"
+                className="w-75 text-white hoveredButton py-2"
                 style={{
                   backgroundColor: "#613D2B",
                   border: "2px solid #613D2B",
                   fontWeight: "bold",
                 }}
                 onClick={() => {
-                  // handlePayTransaction.mutate();
+                  handleReceivePackage.mutate(currentTransactionData.id);
+                  setShowTransactionModals(false);
                 }}
               >
                 Receive Package
