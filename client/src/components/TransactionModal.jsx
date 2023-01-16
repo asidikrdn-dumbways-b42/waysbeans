@@ -28,7 +28,6 @@ const TransactionModals = ({
       onClose: function () {
         /* You may add your own implementation here */
         setShowTransactionModals(false);
-        document.activeElement.blur();
         transactionsDataRefetch();
         Swal.fire({
           icon: "warning",
