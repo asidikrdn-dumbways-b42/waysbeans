@@ -149,7 +149,7 @@ const Login = ({ loginForm, setLoginForm, setRegisterForm }) => {
         )}
 
         <p className="fs-5 my-3 mx-auto text-center pt-1">
-          Don't have an account? ? Klik{" "}
+          Don't have an account ? Klik{" "}
           <b
             style={{ cursor: "pointer" }}
             onClick={() => {
