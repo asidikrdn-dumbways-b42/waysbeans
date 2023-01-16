@@ -1,9 +1,14 @@
+import { useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { useMutation, useQuery } from "react-query";
 import Swal from "sweetalert2";
+import AdminTransactionModals from "../components/AdminTransactionModals";
 import { API } from "../config/api";
 
 const IncomeTransaction = () => {
+  const [showTransactionModals, setShowTransactionModals] = useState(false);
+  const [currentTransactionData, setCurrentTransactionData] = useState({});
+
   const {
     data: allTransactionsData,
     // isLoading: allTransactionsDataIsLoading,
@@ -70,6 +75,11 @@ const IncomeTransaction = () => {
 
   return (
     <main style={{ marginTop: 150 }}>
+      <AdminTransactionModals
+        showTransactionModals={showTransactionModals}
+        setShowTransactionModals={setShowTransactionModals}
+        currentTransactionData={currentTransactionData}
+      />
       <h1
         className="display-6 fw-bold"
         style={{ color: "#613D2B", padding: "0 150px" }}
@@ -88,12 +98,16 @@ const IncomeTransaction = () => {
               <th className="py-3 text-center" width="20%">
                 Name
               </th>
-              <th className="py-3 text-center" width="25%">
+              <th className="py-3 text-center" width="20%">
                 Address
               </th>
               <th className="py-3 text-center">Post Code</th>
-              <th className="py-3 text-center">Products Order</th>
-              <th className="py-3 text-center">Status</th>
+              <th className="py-3 text-center" width="20%">
+                Products Order
+              </th>
+              <th className="py-3 text-center">
+                Status
+              </th>
               <th className="py-3 text-center" width="20%">
                 Action
               </th>
@@ -114,21 +128,29 @@ const IncomeTransaction = () => {
                     {trx.user.post_code}
                   </td>
                   <td className="text-center" valign="middle">
-                    {trx.products.map((product, i) => {
-                      if (i + 1 !== trx.products.length) {
-                        return (
-                          <div className="d-inline" key={i}>
-                            {product.name},{" "}
-                          </div>
-                        );
-                      } else {
-                        return (
-                          <div className="d-inline" key={i}>
-                            {product.name}
-                          </div>
-                        );
-                      }
-                    })}
+                    <p
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setCurrentTransactionData(trx);
+                        setShowTransactionModals(true);
+                      }}
+                    >
+                      {trx.products.map((product, i) => {
+                        if (i + 1 !== trx.products.length) {
+                          return (
+                            <div className="d-inline" key={i}>
+                              {product.name},{" "}
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="d-inline" key={i}>
+                              {product.name}
+                            </div>
+                          );
+                        }
+                      })}
+                    </p>
                   </td>
 
                   {trx.status === "new" && (
