@@ -85,33 +85,47 @@ const Detail = () => {
                     Rp {detailProduct?.price.toLocaleString()},-
                   </Card.Subtitle>
 
-                  <Button
-                    className="w-100 text-white hoveredButton py-2"
-                    style={{
-                      backgroundColor: "#613D2B",
-                      border: "2px solid #613D2B",
-                      fontWeight: "bold",
-                    }}
-                    onClick={() => {
-                      if (loginState.isLogin) {
-                        if (detailProduct?.stock !== 0) {
-                          handleAddCart.mutate();
+                  {handleAddCart.isLoading ? (
+                    <Button
+                      className="w-100 text-white hoveredButton py-2"
+                      style={{
+                        backgroundColor: "#613D2B",
+                        border: "2px solid #613D2B",
+                        fontWeight: "bold",
+                      }}
+                      disabled
+                    >
+                      <Spinner animation="border" variant="light" />
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w-100 text-white hoveredButton py-2"
+                      style={{
+                        backgroundColor: "#613D2B",
+                        border: "2px solid #613D2B",
+                        fontWeight: "bold",
+                      }}
+                      onClick={() => {
+                        if (loginState.isLogin) {
+                          if (detailProduct?.stock !== 0) {
+                            handleAddCart.mutate();
+                          } else {
+                            Swal.fire({
+                              icon: "error",
+                              title: "Product out of stock",
+                            });
+                          }
                         } else {
                           Swal.fire({
+                            title: "You must be logged in to continue !",
                             icon: "error",
-                            title: "Product out of stock",
                           });
                         }
-                      } else {
-                        Swal.fire({
-                          title: "You must be logged in to continue !",
-                          icon: "error",
-                        });
-                      }
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
+                      }}
+                    >
+                      Add to Cart
+                    </Button>
+                  )}
                 </Card.Body>
               </Col>
             </Row>

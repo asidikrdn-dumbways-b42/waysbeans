@@ -397,30 +397,43 @@ const Cart = () => {
               </p>
             </div>
             <div className="mt-5 w-100 d-flex flex-row justify-content-end">
-              <Button
-                className="w-50 text-white hoveredButton py-2"
-                style={{
-                  backgroundColor: "#613D2B",
-                  border: "2px solid #613D2B",
-                  fontWeight: "bold",
-                }}
-                onClick={() => {
-                  if (
-                    profileData.address !== "" &&
-                    profileData.post_code !== ""
-                  ) {
-                    handleAddTransaction.mutate();
-                  } else {
-                    Swal.fire({
-                      icon: "error",
-                      title: "You must complete your profile first !",
-                    });
-                    navigate("/profile");
-                  }
-                }}
-              >
-                Pay
-              </Button>
+              {handleAddTransaction ? (
+                <Button
+                  className="w-50 text-white hoveredButton py-2"
+                  style={{
+                    backgroundColor: "#613D2B",
+                    border: "2px solid #613D2B",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <Spinner animation="border" variant="light" />
+                </Button>
+              ) : (
+                <Button
+                  className="w-50 text-white hoveredButton py-2"
+                  style={{
+                    backgroundColor: "#613D2B",
+                    border: "2px solid #613D2B",
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => {
+                    if (
+                      profileData.address !== "" &&
+                      profileData.post_code !== ""
+                    ) {
+                      handleAddTransaction.mutate();
+                    } else {
+                      Swal.fire({
+                        icon: "error",
+                        title: "You must complete your profile first !",
+                      });
+                      navigate("/profile");
+                    }
+                  }}
+                >
+                  Pay
+                </Button>
+              )}
             </div>
           </Col>
         </Row>
