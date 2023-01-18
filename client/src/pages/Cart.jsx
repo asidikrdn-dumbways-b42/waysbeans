@@ -397,7 +397,7 @@ const Cart = () => {
               </p>
             </div>
             <div className="mt-5 w-100 d-flex flex-row justify-content-end">
-              {handleAddTransaction ? (
+              {handleAddTransaction.isLoading ? (
                 <Button
                   className="w-50 text-white hoveredButton py-2"
                   style={{
@@ -405,6 +405,7 @@ const Cart = () => {
                     border: "2px solid #613D2B",
                     fontWeight: "bold",
                   }}
+                  disabled
                 >
                   <Spinner animation="border" variant="light" />
                 </Button>
