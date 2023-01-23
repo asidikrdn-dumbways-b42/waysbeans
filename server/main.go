@@ -41,8 +41,8 @@ func main() {
 	AllowedHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 
 	// setup origin yang diizinkan
-	// AllowedOrigins := handlers.AllowedHeaders([]string{os.Getenv("ORIGIN_ALLOWED")})
-	AllowedOrigins := handlers.AllowedOrigins([]string{"*"})
+	AllowedOrigins := handlers.AllowedOrigins([]string{os.Getenv("ORIGIN_ALLOWED")})
+	// AllowedOrigins := handlers.AllowedOrigins([]string{"*"})
 
 	// setup method yang diizinkan
 	AllowedMethods := handlers.AllowedMethods([]string{"HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"})
