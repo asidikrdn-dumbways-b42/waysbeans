@@ -26,6 +26,14 @@ ORIGIN_ALLOWED=<domain that allow to hit/use your endpoint>
 # port for run backend
 PORT=<port that you want to run your api server>
 
+# origin set up
+ORIGIN_ALLOWED="*"
+
+# setup clodunary
+CLOUD_NAME=<cloudinary_name>
+API_KEY=<cloudinary_api_key>
+API_SECRET=<cloudinary_api_secret>
+
 # server key midtrans
 SERVER_KEY=<your midtrans server key>
 
