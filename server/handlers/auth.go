@@ -301,7 +301,7 @@ func SendVerification(token string, user dto.RegisterRequest, r *http.Request) {
 
 	data := map[string]string{
 		"Name": user.Name,
-		"URL":  fmt.Sprintf("http://%s/api/v1/verification/%s", r.Host, token),
+		"URL":  fmt.Sprintf("http://%s/api/v1/verification/%s", "https://waysbeans.asidikrdn.my.id", token),
 	}
 
 	// mengambil file template
