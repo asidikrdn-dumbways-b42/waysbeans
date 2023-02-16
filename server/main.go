@@ -26,6 +26,7 @@ func main() {
 
 	// run migration
 	database.RunMigration()
+	database.RunSeeder()
 
 	// membuat router baru
 	r := mux.NewRouter()
