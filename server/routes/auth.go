@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"waysbeans/handlers"
+	authHandlers "waysbeans/handlers/auth"
 	"waysbeans/pkg/middleware"
 	"waysbeans/pkg/mysql"
 	"waysbeans/repositories"
@@ -11,7 +11,7 @@ import (
 
 func Auth(r *mux.Router) {
 	authRepository := repositories.MakeRepository(mysql.DB)
-	h := handlers.HandlerAuth(authRepository)
+	h := authHandlers.HandlerAuth(authRepository)
 
 	// menghandle request dengan method POST pada endpoint /register
 	r.HandleFunc("/register", h.Register).Methods("POST")
